@@ -1,0 +1,141 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>system_setup批量部署</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="shortcut icon" href="ico/favicon.ico">
+        <link rel="apple-touch-icon" href="ico/apple-touch-icon.png">
+        <link rel="stylesheet" href="css/normalize.css">
+       <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+       <!--<link rel="stylesheet" href="bootstrap-3.3.7/dist/css/bootstrap.css">-->
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/Splash.css">
+        <script src="//cdn.bootcss.com/modernizr/2.8.3/modernizr.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    </head>
+    <body>
+    
+    	<!-- 遮罩          -->
+    	<div id = "wait">
+			
+			</div>
+    	
+    	<!--  end             -->
+    	<header>
+    		<div>
+    			<nav class="navbar navbar-default navbar-inverse">
+    				<div class="navbar-header">
+    				<button class="navbar-toggle" data-toggle="collapse" data-target="#nav">
+    					<span class="sr-only">collspan</span>
+    					<span class="icon-bar"></span>
+    					<span class="icon-bar"></span>
+    					<span class="icon-bar"></span>
+    				</button>
+    				</div>
+    				<div class="navbar-collapse collapse" id="nav"  style="border-radius: 0">
+    					<ul class="nav navbar-nav">
+    						<li><a class="fontfff" href="index.html"> home</a></li>
+    						<li><a class="fontfff" href="manage.html"> manager</a></li>
+    						
+    					</ul>
+    				</div>
+    			</nav>
+    		</div>
+    	</header>
+    	<main>
+    		<section class="container-fluid">
+  				<!--   选择页面      -->
+  				<span class="label label-default">Select Store</span>
+    			<div class="row jumbotron">
+    				<div class="col-md-8">
+    					<form class="form-group">
+    						<label for="select-name" class="label label-default">选择门店:(以下门店都是有域名和sa密码，手机查看请开横屏)</label>
+    						<select class="form-control focus" id="select-name" multiple>
+ 
+    						</select>
+    					</form>
+    					<button type="button" class="btn btn-default btn-block" id="select-store">选取</button>
+    				</div>
+    				<div class="col-md-4">
+    					<label class="label label-default">已选择以下门店，从其中选择一个作为参数模板</label>
+    					<div id="checkbox">   						
+    						
+    					</div>
+    					<button class="btn btn-default btn-block" id="select-reference">确定参考系</button>
+    				</div>
+    			</div>
+    			<!--   参数展示页面          -->
+    			<span class="label label-default">Argument</span>
+    			<div class="row jumbotron">
+    				<div class="col-md-12" style="padding: 2em 0">
+    					<div class="col-md-6">
+    						<label class="label label-default" for="seach-main">类别查找：</label>
+    						<form class="form-group">    							
+    							<select class="form-control" id="seach-main">
+    								
+    							</select>    							
+    						</form>
+    						<button type="button" class="btn btn-default btn-block" id="seach-mainin">search</button>
+    					</div>
+    					<div  class="col-md-6">
+    						<label class="label label-default" for="seach-item">模糊搜索：</label>
+    						<form class="form-group">    						
+    						<input type="text" class="form-control" id="seach-item">
+    						</form>
+    						<button type="button" class="btn btn-default btn-block" id="seach-itemin">search</button>
+    					</div>
+    				</div>
+    				<div class="col-md-12">
+    					<table class="table table-bordered">
+    						<thead>
+    							<tr id="argument-thead">
+    								
+    							</tr>
+    						</thead>
+    						<tbody id="argument-tbody">
+    							
+    						</tbody>
+    					</table>
+    				</div>
+    			</div>
+    		</section>
+    	
+		</main>
+    
+    	<!-- regrster modal  -->
+    	<div role="dialog" aria-hidden="true" class="modal" id="modal2" data-backdrop="static">
+    		<div class="modal-dialog">
+    			<div class="modal-content">
+    				<div class="modal-header">
+    					<button data-dismiss="modal" class="close">&times;</button>
+    					<h4>统一参数配置</h4>
+    				</div>
+    				<div class="modal-body">
+    					<form class="form-group">
+    						<label for="argument-name">Argument</label><h5 id="argument-name-label"></h5>
+    						<input class="form-control" id="argument-name" required placeholder="请输入新的值" name="argument-name-label">
+    					</form>
+    					<div id="show-set-success">
+    						
+    					</div>
+    				</div>
+    				<div class="modal-footer">
+    					<button class="btn btn-default" data-dismiss="modal">close</button>
+    					<button class="btn btn-default" id="argumrnt-configure">配置</button>
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+     
+   <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
+        <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/argumentdeploy.js"></script>
+        <script src="js/check-login.js"></script>
+         
+    </body>
+</html>
+

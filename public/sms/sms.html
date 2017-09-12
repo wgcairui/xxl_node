@@ -1,0 +1,94 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>短信自助充值服务</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=0">
+		<link rel="shortcut icon" href="../ico/favicon.ico">
+        <link rel="apple-touch-icon" href="../ico/apple-touch-icon.png">
+        <link rel="stylesheet" href="../css/normalize.css">
+        <link href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/main.css">
+        <script src="//cdn.bootcss.com/modernizr/2.8.3/modernizr.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+   </head>
+    
+   	<body data-spy="scroll" data-target="#scroll1" style="background-color: #ebebeb">
+      <!-- header -->
+       <header class="container-fluid jumbotron headerimg" style="margin-bottom: 0">
+      		<div class="row header-ico">
+      			<a class="tip " title="xxl" href="#"><img src="http://static.ghostchina.com/image/b/46/4f5566c1f7bc28b3f7ac1fada8abe.png"></a>
+      		</div>       		
+       </header>
+		
+		<main class="container" style="padding: 1em 0">
+		<span class="label label-default">SMS</span>
+			<div class="jumbotron">
+				<form class="form-group" id="sms" name="sms">
+				
+					<label for="select-territory">选择地域:{{territory}}</label>
+					<select id="select-territory" name="select-territory" class="form-control" v-model="territoryname">
+						<option v-for="i in territorylist" v-bind:value="i.id">{{i.territory}}</option>
+					</select>
+					
+					<label for="select-store">选择门店：{{storename}}</label>
+					<select id="select-store" name="select-store" class="form-control" autofocus v-model="storename">
+						<option v-for="i in storelist" v-bind:value="i.client_name">{{i.client_name}}</option>
+					</select>
+					
+					<label for="tel">联系电话：{{tel}}</label>
+					<input type="tel" class="form-control" id="tel" name="tel" required maxlength="12" v-model="tel">
+					
+					<label for="money">充值金额：{{money}}</label>
+					<select id="money" name="money" class="form-control" v-model="money">
+						<option v-for="i in moneytemplate" v-bind:value="i.money">{{i.template}}</option>
+					</select>
+					
+					<button id="xw" type="button" class="btn btn-default btn-block btn-success" v-on:click="quest_ok" style="margin-top: 2em">确认充值！！！</button>
+					
+				</form>
+			</div>
+		</main>
+		
+		
+		<section>
+			<div role="dialog" id="pay" class="modal fade" indextab="-1" aria-hidden="true">
+				<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button class="close" data-dismiss="modal" >&times;</button>
+						<h4 class="center-block">支付</h4>
+					</div>
+					<div class="modal-body row">
+						<div v-if="show.selectpay">					
+						<label>门店为:{{storename}},提醒信息发送到：{{tel}},充值金额为：{{money}}，处理时间为周一至周五。</label>
+						<div class="col-md-12 col-xs-12" style="margin: 1em 3em">
+							<div class="col-md-6 col-xs-6 center-block">
+								<button class="btn btn-default btn-danger" id="alipay" v-on:click="alipay">支付宝付款</button>
+							</div>
+							<div class="col-md-6 col-xs-6 center-block">
+								<button class="btn btn-default btn-danger" id="wxpay" v-on:click="wxpay">微信付款</button>
+							</div>
+						</div>
+						</div>
+						<div v-if="show.pic">
+							<img v-bind:src="tedsrc" v-on:click="refreshpay" style="max-width: 80%;margin: 2em">
+						</div>	
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-default" data-dismiss="modal">close</button>
+						<button class="btn btn-default btn-success" id="pay-success" v-on:click="pay">支付完成</button>
+					</div>
+				</div>	
+				</div>
+			</div>
+		</section>
+		
+ 		<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
+		<script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="sms.js"></script>
+    </body>
+</html>

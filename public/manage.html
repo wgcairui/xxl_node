@@ -1,0 +1,205 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>后台</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="shortcut icon" href="ico/favicon.ico">
+        <link rel="apple-touch-icon" href="ico/apple-touch-icon.png">
+        <link rel="stylesheet" href="css/normalize.css">
+        <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="//cdn.bootcss.com/modernizr/2.8.3/modernizr.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    </head>
+    <body>
+    <header>
+    	<nav class="navbar navbar-default navbar-inverse" role="navigation">
+    		<div class="navbar-header">
+    			<button class="navbar-toggle" data-toggle="collapse" data-target="#nav2" type="button">
+    				<span class="sr-only">collapse</span>
+    				<span class="icon-bar"></span>
+    				<span class="icon-bar"></span>
+    				<span class="icon-bar"></span>
+    			</button>
+    		</div>
+    		<div class="navbar-collapse collapse center-block" id="nav2" >
+    			<ul class="nav navbar-nav">
+    				<li><a href="index.html" class="fontfff"><span class="glyphicon glyphicon-home">  home</span></a></li>
+    				<li><a href="http://regxxl.microcloud.asia" class="fontfff tip" title="账号35630密码210" data-toggle="tooltip">软件新注册/延期</a></li>
+    				<li><a href="http://www.microcloud.asia" class="fontfff tip" target="_blank" title="休闲乐微云程序">微信-微云</a></li>			
+					<li><a href="ArgumentDeploy.html" class="fontfff" title="deploy" target="_blank">批量修改门店设置</a></li>
+					<li><a href="sms/CheckSms.html" class="fontfff" title="sms" target="_blank">SMS log</a></li>
+					<li class="right"><a href="#" class="fontfff" id = "exit_login">Exit Login</a></li>
+    			</ul>
+    		</div>
+    	</nav>
+    </header>
+	<!-- modal wait -->
+	<div id="wait"></div>
+	
+    <main class="container">
+    	<div class="row">
+    	
+    		<section class=" col-md-6">
+    			<span class="label label-default">查询客户信息</span>
+    			<article class="jumbotron">
+    				<form class="form-group">
+    					<label for="select-name">选择门店:</label>
+    					<select class="form-control" id="select-name">
+    						
+    					</select>
+    				</form>
+    				<button type="button" class="btn btn-default btn-block btn-primary" id="select-submit">submit</button>
+    				<hr/>
+    				<table class="table table-hover" id="store-info">
+    					
+    				</table>
+    				<hr/>
+    				<div class="btn-group pull-right">
+					<a class="btn btn-default" href="#add-store">add store</a>
+					<button class="btn btn-default" id="delete-store">delete-store</button>
+					</div>
+				</article>    			
+    		</section>
+    		
+    	
+    		
+    		<section class=" col-md-6" id="add-store">
+    			<span class="label label-default">add-store</span>
+    			<article class="jumbotron">
+    				<button class="btn btn-default btn-success btn-block collapsed" id="addstore" data-toggle="collapse" data-target="#input-store-info">添加门店<span class="caret"></span></button>
+    				<div class="collapse" id="input-store-info">
+    					<form class="form-group" name="storeinfo" id="storeinfo">
+    						<label for="client_name">名称:</label>
+    						<input type="text" id="client_name" name="client_name" class="form-control">
+    						<label for="territory">地域:</label>
+    						<select class="form-control" id="territory" name="territory">
+    							
+    						</select>
+    						<label for="server_name">服务器：</label>
+    						<input type="text" class="form-control" value="server" id="server_name" name="server_name">
+    						<label for="server_pw">服务器密码:</label>
+    						<input type="text" id="server_pw" name="server_pw" class="form-control">
+    						<label for="Sql_version">数据库版本:</label>
+    						<select id="Sql_version" name="Sql_version" class="form-control">
+    							<option value="SQL2000" selected>SQL2000</option>
+    							<option value="SQL2005">SQL2005</option>
+    							<option value="SQL2008">SQL2008</option>
+    							<option value="SQL2008r2">SQL2008r2</option>
+    							<option value="SQL2012">SQL2012</option>
+    						</select>
+    						<label for="sa_user">数据库用户：</label>
+    						<input type="text" class="form-control" id="sa_user" name="sa_user" value="sa">
+    						<label for="sa_pw">数据库密码：</label>
+    						<input type="text" id="sa_pw" name="sa_pw" class="form-control">
+    						<label for="server_ip">IP:</label>
+    						<input type="text" id="server_ip" name="server_ip" class="form-control" value="192.168.">
+    						<label for="tel_name">联系人：</label>
+    						<input type="text" id="tel_name" name="tel_name" class="form-control">
+    						<label for="tel	">联系电话:</label>
+    						<input type="tel" id="tel" name="tel" class="form-control">
+    						<label for="wifi_pw">wifi:</label>
+    						<input type="text" id="wifi_pw" name="wifi_pw" class="form-control">
+    						<label for="rout_user">路由账户：</label>
+    						<input type="text" id="rout_user" name="rout_user" class="form-control" value="admin">
+    						<label for="rout_pw">路由密码：</label>
+    						<input type="text" id="rout_pw" name="rout_pw" class="form-control">
+    						<label for="microcloudID">微云ID:</label>
+    						<input class="form-control" type="text" id="microcloudID" name="microcloudID">
+    						<label for="meg_id">msid:</label>
+    						<input type="number" id="meg_id" name="meg_id" class="form-control">
+    						<label for="meg_name">msname:</label>
+    						<input type="text" id="meg_name" name="meg_name" class="form-control">
+    						<label for="meg_pw">ms-passwd:</label>
+    						<input type="text" id="meg_pw" name="meg_pw" class="form-control">
+    						<label for="meg_yz">ms-验证码:</label>
+    						<input type="number" id="meg_yz" name="meg_yz" class="form-control" value="1212">
+    						<label for="net_domain">域名:</label>
+    						<input type="text" id="net_domain" name="net_domain" class="form-control">
+    						<label for="net_name">域名user:</label>
+    						<input type="text" id="net_name" name="net_name" class="form-control">
+    						<label for="net_pw">域名passwd:</label>
+    						<input type="text" id="net_pw" name="net_pw" class="form-control">
+    						<label for="remark">备注:</label>
+    						<input type="text" id="remark" name="remark" class="form-control">
+    						
+    					</form>
+    					<button type="button" class="btn btn-default btn-success btn-block" id="add-store-update">sumbit</button>
+    				</div>
+				</article>    			
+    		</section>
+    		     <div class="clearfix"></div>		
+    		<section class=" col-md-6">
+    			<span class="label label-default">添加云链接</span>
+    			<article class="jumbotron">
+    				<form class="form-group">
+					<label class="control-label" for="d-ipname">链接名称：</label>
+					<input class="form-control" type="text" id="d-ipname" >
+					<label class="control-label" for="d-ipad">链接地址：</label>
+					<input class="form-control" type="text" id="d-ipadress" value="http://">
+				</form>
+				<button class="btn btn-default btn-block btn-primary" id="d">提交</button>				
+				</article>    			
+    		</section>
+    		
+    		<section class="col-md-6">
+    			<span class="label label-default">添加本地链接</span>
+    			<article class="jumbotron">
+    				<form class="form-group" action="php/main-manage-upload.php" enctype="multipart/form-data" name="f1" method="post" target="_blank">
+						<label class="control-label" for="filename">文件描述：</label>
+						<input class="form-control" type="text" id="filename" >
+						<label class="control-label" for="fileadress">上传文件：</label>
+						<input  type="file" id="fileadress[]" name="fileadress[]" class="form-control" multiple>
+						<button type="submit" class="btn btn-default btn-block btn-primary" id="file" style="margin-top: .5em">提交</button>
+					</form>
+					
+				</article>    			
+    		</section>
+    		
+    		<section class="col-md-12">
+    			<span class="label label-default">查询日志</span>
+    			<article class="jumbotron">
+    				<h4>log</h4>
+    				<table class="table" id="loginfo">
+    					
+    				</table>
+    				<input type="number" value="100" id="loglimit">
+					<button class="btn btn-default  btn-primary" id="get-log">查询</button>
+					<button class="btn btn-default" id="del-log">清空</button>
+				</article>    			
+    		</section>
+    		
+    		
+    	</div>
+    </main>
+    	<div class="modal fade" role="dialog" tabindex="-1" aria-hidden="true" id="modal3">
+    			<div  class="modal-dialog">
+    				<div class="modal-content">
+    					<div class="modal-header">
+    						<button class="close" data-dismiss="modal">&times;</button>
+    						<h4 class="center-block">修改门店参数</h4>
+    					</div>
+    					<div class="modal-body">
+    						<form class="form-group" id="modify-val">
+    							<label for="valname"></label>
+								<input type="text" placeholder="" required class="form-control" id="val">
+    						</form>
+    					</div>
+    					<div class="modal-footer">
+    						<button class="btn btn-default" data-dismiss="modal">close</button>
+    						<button class="btn btn-default btn-success" id="modifyval">确认修改</button>
+    					</div>
+    				</div>
+    			</div>
+    		</div>
+     
+   <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
+        <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main-manage.js"></script>
+         
+    </body>
+</html>

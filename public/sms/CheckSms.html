@@ -1,0 +1,46 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>短信提交事件查询</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=0">
+		<link rel="shortcut icon" href="../ico/favicon.ico">
+        <link rel="apple-touch-icon" href="../ico/apple-touch-icon.png">
+        <link rel="stylesheet" href="../css/normalize.css">
+        <link href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/main.css">
+        <script src="//cdn.bootcss.com/modernizr/2.8.3/modernizr.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    </head>
+   	<body data-spy="scroll" data-target="#scroll1" style="background-color: #ebebeb">
+      <!-- header -->
+       <header class="container-fluid jumbotron headerimg" style="margin-bottom: 0">
+      		<div class="row header-ico">
+      			<a class="tip " title="xxl" href="#"><img src="http://static.ghostchina.com/image/b/46/4f5566c1f7bc28b3f7ac1fada8abe.png"></a>
+      		</div>       		
+       </header>
+       
+       <main class="container">
+       		<div class="row jumbotron">
+       			<table class="table table-hover table-bordered">
+       				<thead>
+       					<tr><th>ID</th><th>客户名</th><th>联系电话</th><th>付款方式</th><th>提交时间</th><th>Check</th></tr>
+       				</thead>
+       				<tbody id="smslist">
+       					
+       				</tbody>
+       				<tfoot>
+       					<td><th id="foot"></th></td>
+       				</tfoot>
+       			</table>
+       		</div>
+       </main>
+       
+       <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
+		<script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   		<script src="checksms.js"></script>
+	</body>
+	
+</html>

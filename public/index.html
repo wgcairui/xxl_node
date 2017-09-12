@@ -1,0 +1,261 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>休闲乐软件</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=0">
+		<link rel="shortcut icon" href="ico/favicon.ico">
+        <link rel="apple-touch-icon" href="ico/apple-touch-icon.png">
+        <link rel="stylesheet" href="css/normalize.css">
+        <link href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="//cdn.bootcss.com/modernizr/2.8.3/modernizr.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    </head>
+   	<body data-spy="scroll" data-target="#scroll1" style="background-color: #ebebeb">
+      <!-- header -->
+       <header class="container-fluid jumbotron headerimg" style="margin-bottom: 0">
+      		<div class="row header-ico">
+      			<a class="tip " title="xxl" href="#"><img src="http://static.ghostchina.com/image/b/46/4f5566c1f7bc28b3f7ac1fada8abe.png"></a>
+      		</div>       		
+       </header>
+	   <!-- modal wait  -->
+	   <div id="wait">
+	   </div>
+       <!-- nav -->
+       <nav class="navbar navbar-default navbar-inverse" role="navigation" style="border-radius: 0">
+       		<div class="navbar-header">
+       			<button class="navbar-toggle" data-toggle="collapse" data-target="#nav1" type="button">
+       				<span class="sr-only">sm show</span>
+       				<span class="icon-bar"></span>
+       				<span class="icon-bar"></span>
+       				<span class="icon-bar"></span>
+       				<span class="icon-bar"></span>
+       			</button>
+       			<a href="#" class="navbar-brand" >休闲乐软件</a>
+       		</div>
+       		<div class="collapse navbar-collapse pull-right" id="nav1">
+       			<ul class="nav navbar-nav">
+       				<li><a href="sms/sms.html" class="fontfff tip" target="_blank" title="SMS">短信自助充值服务</a></li>
+       				<li><a href="http://www.microcloud.asia" class="fontfff tip" target="_blank" title="休闲乐微云程序">微信-微云</a></li>
+       				<li><a href="#s10" class="fontfff tip" title="软件供应客户">企业客户</a></li>
+       				<li><a href="#s15" class="fontfff tip"  title="展示最新消息">最新公告</a></li>
+       				<li><a href="#" class="fontfff" title="管理人员后台登陆，用于添加数据" id="login">后台登陆</a></li>
+       			</ul>
+       		</div>
+       </nav>
+       
+       <!-- login -->
+       <div role="dialog" class="modal fade" tabindex="-1" aria-hidden="true" id="loginin" data-backdrop="static">
+       		<div class="modal-dialog">
+       			<div class="modal-content">
+       				<div class="modal-header">
+       					<button class="close" data-dismiss="modal" >&times;</button>
+       					<h4>登陆</h4>
+       				</div>
+       				<div class="modal-body">
+       					<form role="form">
+       						<div class="form-group">
+       							<label for="user">user:</label>
+       							<input class="form-control" id="user" type="text" value="001">
+       						</div>
+       						<div class="form-group">
+       							<label for="pass">passwd:</label>
+       							<input id="pass" class="form-control" type="password">
+       						</div>
+       					</form>
+       				</div>
+       				<div class="modal-footer">
+       					<button class="btn btn-default" type="button" data-dismiss="modal">close</button>
+       					<button class="btn btn-default btn-success" id="logins">验证</button>
+       				</div>
+       			</div>
+       		</div>
+       </div>
+       
+       <!-- main  -->
+       <main class="container-fluid" >
+       		<div class="row">
+       		<!-- md9 -->
+       			<div class="col-md-9 col-xs-12">
+       			
+       				<section class="block" id="s1">
+       					<div class="block-tittle">
+       						<h4>软件下载</h4>
+       					</div>
+       					<article>
+       					<p class="block-p">以下链接为休闲乐软件本地下载链接，exe文件为最新版本软件，zip为压缩文件（下载之后请自行解压缩）。</p>
+       					
+       					<ul class="block-cont list-group" id="xxl-down">
+       					</ul>
+       					<a class="btn btn-default btn-link btn-block center-block">显示更多<span class="glyphicon glyphicon-arrow-down"></span></a>
+       					</article>
+       					<footer class="block-footer">
+       						<span class="glyphicon glyphicon-cloud-download center-block"></span>
+       						<address class="pull-right text-info">更新时间为:<time>2017-06-01</time></address>
+       					</footer>
+       				</section>
+       				
+       				<section class="block" id="s2">
+       					<header class="block-tittle">
+       						<h4>工具下载</h4>
+       					</header>
+       					<article>
+       						<p class="block-p">以下链接为休闲乐软件工具下载链接，其中大部分链接为百度云链接（需要百度云账户或百度云客户端下载），zip为压缩文件（下载之后请自行解压缩）。</p>
+       						<div class="block-cont">
+       							<ul class="list-group" id="other-down">
+       								
+       							</ul>
+       							<a class="btn btn-default btn-link btn-block center-block">显示更多<span class="glyphicon glyphicon-arrow-down"></span></a>
+       						</div>
+       					</article>
+       					<footer class="block-footer">
+       						<span class="glyphicon glyphicon-cloud-download center-block"></span>
+       						<address class="pull-right text-info">更新时间为:<time>2017-06-01</time></address>
+       					</footer>
+       				</section>
+       				<!--  client -->
+       				<section class="block" id="s10">
+       					<header class="block-tittle">
+       						<h4>我们的客户</h4>
+       					</header>
+       					<article>
+       						<p class="block-p">休闲乐软件（江苏）服务于江苏，上海区域足疗，养生，洗浴，美容，餐饮等服务业行业软件。</p>
+       						<div class="block-cont">
+       							<div class="panel-group" id="panels">
+       								<div class="panel panel-default">
+       									<div class="panel-heading">
+       										<a class="panel-title" data-toggle="collapse" href="#sh" data-parent="#panels">上海</a>
+       									</div>
+       									<div class="panel-collapse collapse" id="sh">
+       										<ul class="panel-body">
+       											<li><p>爱丁堡<span class="badge pull-right">2012</span></p></li>
+       											<li><p>爱丁堡<span class="badge pull-right">2012</span></p></li>
+       										</ul>
+       									</div>
+       								</div>
+       								<div class="panel panel-default">
+       									<div class="panel-heading">
+       										<a class="panel-title" data-toggle="collapse" href="#sz" data-parent="#panels">苏州</a>
+       									</div>
+       									<div class="panel-collapse collapse" id="sz">
+       										<ul class="panel-body">
+       											<li><p>爱丁堡<span class="badge pull-right">2012</span></p></li>
+       										</ul>
+       									</div>
+       								</div>
+       								<div class="panel panel-default">
+       									<div class="panel-heading">
+       										<a class="panel-title" data-toggle="collapse" href="#wx" data-parent="#panels">无锡</a>
+       									</div>
+       									<div class="panel-collapse collapse" id="wx">
+       										<ul class="panel-body">
+       											<li><p>爱丁堡<span class="badge pull-right">2012</span></p></li>
+       										</ul>
+       									</div>
+       								</div>
+       								<div class="panel panel-default">
+       									<div class="panel-heading">
+       										<a class="panel-title" data-toggle="collapse" href="#nt" data-parent="#panels">南通</a>
+       									</div>
+       									<div class="panel-collapse collapse" id="nt">
+       										<ul class="panel-body">
+       											<li><p>爱丁堡<span class="badge pull-right">2012</span></p></li>
+       										</ul>
+       									</div>
+       								</div>
+       								<div class="panel panel-default">
+       									<div class="panel-heading">
+       										<a class="panel-title" data-toggle="collapse" href="#cz" data-parent="#panels">常州</a>
+       									</div>
+       									<div class="panel-collapse collapse" id="cz">
+       										<ul class="panel-body">
+       											<li><p>爱丁堡<span class="badge pull-right">2012</span></p></li>
+       										</ul>
+       									</div>
+       								</div>
+       								<div class="panel panel-default">
+       									<div class="panel-heading">
+       										<a class="panel-title" data-toggle="collapse" href="#nj" data-parent="#panels">南京</a>
+       									</div>
+       									<div class="panel-collapse collapse" id="nj">
+       										<ul class="panel-body">
+       											<li><p>爱丁堡<span class="badge pull-right">2012</span></p></li>
+       										</ul>
+       									</div>
+       								</div>
+       							</div>
+       						</div>
+       					</article>
+       					<footer class="block-footer">
+       						<span class="glyphicon glyphicon-flag center-block"></span>
+       						<address class="pull-right text-info">更新时间为:<time>2017-06-01</time></address>
+       					</footer>
+       				</section>
+       				<!--  news  -->
+       				<section class="block" id="s15">
+       					<header class="block-tittle">
+       						<h4>公告！！！</h4>
+       					</header>
+       					<article>
+       						<ul class="block-cont">
+       							<li>
+       								<p class="block-p"></p>
+       							</li>
+       						</ul>
+       					</article>
+       					<footer class="block-footer">
+       						<span class="glyphicon glyphicon-comment center-block"></span>
+       						<address class="pull-right text-info">更新时间为:<time>2017-06-01</time></address>
+       					</footer>
+       				</section>
+       				
+       			</div>
+       			<!-- col-3 -->
+       			
+       			<div class="col-md-3 hidden-xs block pull-right" style="width: 22%;margin-left: 0">
+       				<header class="block-tittle">
+       					<h4>aside</h4>
+       				</header>
+       				<aside class="block-cont">
+       					
+       				</aside>
+       			</div>
+       			<div class="clearfix visible-xs"></div>
+       		</div>
+       </main>
+       <!-- footer -->
+       <footer class="footer">
+       		<div class="container">
+       			<section class="col-md-4">
+       				<header class="footer-head">
+       					<h4 class="footer-tittle">最新动态</h4>
+       				</header>
+       				<ul>
+       					<li><a href="#" class="footer-show">news</a></li>
+       				</ul>
+       			</section>
+       			<section class="col-md-4">
+       				<header class="footer-head">
+       					<h4 class="footer-tittle">新客户</h4>
+       				</header>
+       			</section>
+       			<section class="col-md-4">
+       				<header class="footer-head">
+       					<h4 class="footer-tittle">联系咨询</h4>
+       				</header>
+       				<ul>
+       					<li><p><span class="glyphicon glyphicon-phone"></span> 杨先生：13972689305</p></li>
+       					<li><p><span class="glyphicon glyphicon-phone"></span> 邓先生：18118439727（技术支持）</p></li>
+       				</ul>
+       			</section>
+       		</div>
+       </footer>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
+        <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>     
+    </body>
+</html>

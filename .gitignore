@@ -1,0 +1,5 @@
+
+node_modules/*
+passwd/*
+log/*
+public/file/*
