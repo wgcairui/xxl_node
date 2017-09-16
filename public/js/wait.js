@@ -10,3 +10,4 @@ $(document).ajaxStop(function(){
 	$("#modal1").modal("hide");
 	console.log("ajaxStop  "+Date());
 });
+

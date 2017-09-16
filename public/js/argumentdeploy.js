@@ -7,7 +7,7 @@ $(function(){
 				url:"/get",
 				dataType:"json"
 	});
-	$.getScript('js/wait.js');
+	$.getScript('js/wait.js'); 
 	//查询信息list
 	GetStoreInfo("select-name");
 	var stores; //缓存选择的门店对象
@@ -37,29 +37,31 @@ $(function(){
 	
 	//确定参考系之后提交，刷新设置参数
 	$("#select-reference").click(function(){
-		var select_refereence_store = $("#checkbox input:checked").val(),
-			html="";
-		
+		var select_refereence_store = $("#checkbox input:checked").val();
+		if(!select_refereence_store){
+			return false;
+		}
+
 		$.ajax({
 			data:{				
-				sid:"get-reference-argument",				
+				sid:"get_reference_argument",				
 				//storeid:select_store.join("-"),
 				reference_store:select_refereence_store				
 			},
 			success:function(data){
-				if(data.length > 100){
+				if(!data.info){
+					var html = '';
 					var argument_tbody = $("#argument-tbody");
-					$("#argument-thead").empty();
+					var argment_thead = $("#argument-thead");
+					argment_thead.empty().append("<th>main</th><th>Argument</th><th>参考门店</th>");
 					argument_tbody.empty();
-					$("#argument-thead").append("<th>main</th><th>Argument</th><th>参考门店</th>");					
+										
 					$.each(data,function(i,item){
-						if(item.main_item !== "技师钟数统计模板"){
-							html +="<tr><td>"+item.main_item+"</td><td>"+item.sub_item+"</td><td>"+item.item_value+"</td></tr>";
-							select_main.push(item.main_item);
-						}
-						argument_tbody.append(html);
+						html +="<tr><td>"+item.Main_Item+"</td><td>"+item.Sub_Item+"</td><td>"+item.Item_Value+"</td></tr>";
+						select_main.push(item.Main_Item);		
+						
 					});	
-					
+					argument_tbody.append(html);
 					//处理类别选择表单 seach-main
 					var temp = un(select_main),
 						str="";
@@ -71,20 +73,11 @@ $(function(){
 				//下面开始获取已选择门店列表的参数值；
 					for(var i=0;i<select_store.length;i++){
 						if(select_store[i] !== select_refereence_store){
-							get_s(i);							
-						}
-						
-					}
-					
-					
-				}else if(data.id === "1"){
-					console.log(data.info+data.error);
-					alert(data.log+"==错误代码"+data.error);
-				}else{
-					alert(data);
-				}				
+							//get_s(i);							
+						}						
+					}					
+				}			
 			}		
-		
 		});	
 			
 	});

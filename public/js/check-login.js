@@ -9,14 +9,14 @@ $(document).ready(function(){
 	$("*").hover(function(){
 		stat = 1;
 	});
-	window.setInterval(CheckLogin,60000);
+	window.setInterval(CheckLogin,600000);
 	
 
 	function CheckLogin(){
 		if(stat === 1){
 		$.ajax({
 			type:"POST",
-			url:"/post",
+			url:"/login",
 			data:{
 				sid:"ch_login"
 			},

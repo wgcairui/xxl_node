@@ -1,14 +1,16 @@
 var express = require('express');
 var app = express();
-var route = express.Router()
+var route = express.Router();
 var Format = require('../lib/Format');
 var my = require('../lib/mysqlContent');
+var ms = require('../lib/mssqlContent');
 var os = require('os');
 var fs = require('fs');
 
 route.get('/',function(req,res){
     var query = req.query;
-    var sid = query.sid;    
+    var sid = query.sid;
+    console.log(sid);    
     switch(sid){
         //index.html file download
         case 'xxl-down':
@@ -146,6 +148,23 @@ route.get('/',function(req,res){
                     resjson(res,result);
                 });
             }();
+        break;
+
+        //argment.html
+        case 'get_reference_argument':
+            (function(){                
+                var storeid = query.reference_store;
+                my.select_store_contstr(storeid,function(contstr){
+                    //console.log(contstr.sa_user+contstr.net_domain);
+                    ms.setval(contstr.sa_user,contstr.sa_pw,contstr.net_domain);
+                    ms.query("select * from system_setup where main_item not like '技师钟数%'",function(result){
+                        //console.log(result);
+                        res.json(result);
+                    });
+                });
+
+            })();          
+            
         break;
     }
     

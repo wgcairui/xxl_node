@@ -1,7 +1,6 @@
 var express = require('express');
 var app = express();
 var router = express.Router();
-var Format = require('../lib/Format');
 
 var get = require('./getInfo');
 var post = require('./PostInfo');
