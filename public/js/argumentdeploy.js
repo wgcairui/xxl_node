@@ -49,13 +49,13 @@ $(function(){
 				reference_store:select_refereence_store				
 			},
 			success:function(data){
+				var html = '';
+				var argument_tbody = $("#argument-tbody");
+				var argment_thead = $("#argument-thead");
+				argment_thead.empty().append("<th>main</th><th>Argument</th><th>参考门店</th>");
+				argument_tbody.empty();
+
 				if(!data.info){
-					var html = '';
-					var argument_tbody = $("#argument-tbody");
-					var argment_thead = $("#argument-thead");
-					argment_thead.empty().append("<th>main</th><th>Argument</th><th>参考门店</th>");
-					argument_tbody.empty();
-										
 					$.each(data,function(i,item){
 						html +="<tr><td>"+item.Main_Item+"</td><td>"+item.Sub_Item+"</td><td>"+item.Item_Value+"</td></tr>";
 						select_main.push(item.Main_Item);		
@@ -73,9 +73,12 @@ $(function(){
 				//下面开始获取已选择门店列表的参数值；
 					for(var i=0;i<select_store.length;i++){
 						if(select_store[i] !== select_refereence_store){
-							//get_s(i);							
+							get_s(i);							
 						}						
 					}					
+				}else{
+					console.log(data.info);
+					alert(data.info);
 				}			
 			}		
 		});	
@@ -161,18 +164,19 @@ $(function(){
 	function get_s(i){
 		$.ajax({
 			data:{
-				sid:"get-store-argument",
+				sid:"get_reference_argument",
 				reference_store:select_store[i]
 			},
 			success:function(data){
 				var name = get_store_name(select_store[i]);
-				if(data.length > 100){
+				if(!data.status){
 					$("#argument-thead").append("<th>"+name+"</th>");
 					$.each(data,function(i,item){
-						var td = $("#argument-tbody td:contains("+item.sub_item+")");
-						if(td.prev().text() == item.main_item){
-							var tr = td.parent();						
-							tr.append("<td>"+item.item_value+"</td>");
+						var td = $("#argument-tbody td:contains("+item.Sub_Item+")");
+						
+						if(td.prev().text() == item.Main_Item){
+							//console.log(item.Sub_Item);
+							td.parent().append("<td>"+item.Item_Value+"</td>");						
 						}						
 					});					
 				}else{

@@ -155,16 +155,56 @@ route.get('/',function(req,res){
             (function(){                
                 var storeid = query.reference_store;
                 my.select_store_contstr(storeid,function(contstr){
-                    //console.log(contstr.sa_user+contstr.net_domain);
-                    ms.setval(contstr.sa_user,contstr.sa_pw,contstr.net_domain);
-                    ms.query("select * from system_setup where main_item not like '技师钟数%'",function(result){
-                        //console.log(result);
-                        res.json(result);
-                    });
+                    selectMySystem(contstr);
                 });
-
-            })();          
+            })(); 
             
+            function selectMySystem(contstr){
+                ms.setval(contstr.sa_user,contstr.sa_pw,contstr.net_domain);
+                ms.query("select * from system_setup where main_item not like '技师钟数%'",function(result){
+                    //console.log(result);
+                    res.json(result);
+                });
+            }
+            
+        break;
+
+        case 'set-argument':
+            (function(){
+                var list = query.storelist;
+                var s = [],
+                    listLength = list.length;
+                for(var i=0;i<list.length;i++){
+                    var id = list[i];
+                    my.select_store_contstr(id,function(contstr){
+                        var id = contstr.id;
+                        ms.setval(contstr.sa_user,contstr.sa_pw,contstr.net_domain);
+                        ms.update({Item_Value:query.item},{Sub_Item:query.main},'system_setup',function(result){
+                            if(result == 1){
+                                s.push({storeid:id,info:'update suceess'});
+                            }else{
+                                s.push({storeid:id,info:'update error'});
+                            }
+                        });
+                    });
+                }
+
+                var _intervar = setInterval(function(){
+                                    if(s.length === listLength){                       
+                                        res.json(s);
+                                        s = 0;
+                                        return false;
+                                    }
+                                },1000);
+
+                var _stopinter = setInterval(function(){
+                    if(s === 0){
+                        clearInterval(_intervar);
+                        s = [];
+                    }
+                },1000);
+                
+            })();
         break;
     }
     
