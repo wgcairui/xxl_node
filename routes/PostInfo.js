@@ -28,26 +28,23 @@ route.post('/',function(req,res){
             }();
         break;
 
-        case 'update-store-info':
-            
+        case 'update-store-info':            
             var update_store = function(){
-                var id = body.territory,
-                    key = '',
+                var key = '',
                     val = '';
-                my.query("SELECT territory FROM `territory` WHERE id="+id,function(result){
-                    body.territory = result[0].territory;
-                    for(var i in body){
-                        if(i !== 'sid'){
-                            key += "`"+i+"`,";
-                            val += "'"+body[i]+"',";
-                        }                        
-                    }
-                    var sql = "INSERT INTO client_data ("+key+"`sing_date`) VALUES ("+val+" now())";
-                    console.log(sql);
-                    my.query(sql,function(result){
-                        resjson(res,result);                    
-                    });
-                });               
+                
+                for(var i in body){
+                    if(i !== 'sid'){
+                        key += "`"+i+"`,";
+                        val += "'"+body[i]+"',";
+                    }                        
+                }
+                var sql = "INSERT INTO client_data ("+key+"`sing_date`) VALUES ("+val+" now())";
+                //console.log(sql);
+                my.query(sql,function(result){
+                    resjson(res,result);                    
+                });
+                              
             }();
         break;       
     }

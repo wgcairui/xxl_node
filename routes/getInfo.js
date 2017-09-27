@@ -28,15 +28,21 @@ route.get('/',function(req,res){
             });
         break;
 
+        case "get-client-name":
+            my.query('select client_name,territory from client_data',function(result){
+                res.json(result);
+            });
+        break;
+
         //manage.html get store list =================================
         case 'get-store-list':
-            my.query("SELECT id,client_name FROM `client_data`",function(result){
+            my.query("SELECT id,client_name,territory FROM `client_data`",function(result){
                 res.json(result).end();
             });
         break;
 
         case 'get-territory-info':
-            my.query("SELECT id,territory FROM `territory`",function(result){
+            my.query("SELECT territory FROM `territory`",function(result){
                 res.json(result).end();
             });
         break;
@@ -70,14 +76,7 @@ route.get('/',function(req,res){
         break;
         
         //argument ======================================
-        case 'get-reference-argument':
-            var getreferenceargument = function(){
-                var $sql = "select id,main_item,sub_item,item_value from system_setup where main_item <> '技师钟数统计模板'";
-                
-            }();
-            
-        break;
-
+        
         case 'get-store-list-domain':
             var getstorelistdomain = function(){
                 var $sql = "SELECT id,client_name FROM `client_data` WHERE (sa_pw <> '' OR sa_pw <> null) AND (net_domain <> '' OR net_domain <> null OR net <> '' OR net <> null)";
@@ -152,58 +151,31 @@ route.get('/',function(req,res){
 
         //argment.html
         case 'get_reference_argument':
-            (function(){                
-                var storeid = query.reference_store;
-                my.select_store_contstr(storeid,function(contstr){
-                    selectMySystem(contstr);
+            (function(){
+                my.select_store_contstr(query.storeid,function(contstr){
+                    ms.queryexecute("select * from system_setup where main_item not like '技师钟数%'",contstr,function(result){
+                        //console.log(result);
+                        res.json(result);
+                    });
                 });
-            })(); 
-            
-            function selectMySystem(contstr){
-                ms.setval(contstr.sa_user,contstr.sa_pw,contstr.net_domain);
-                ms.query("select * from system_setup where main_item not like '技师钟数%'",function(result){
-                    //console.log(result);
-                    res.json(result);
-                });
-            }
-            
+            }()); 
         break;
 
         case 'set-argument':
             (function(){
-                var list = query.storelist;
-                var s = [],
-                    listLength = list.length;
-                for(var i=0;i<list.length;i++){
-                    var id = list[i];
-                    my.select_store_contstr(id,function(contstr){
-                        var id = contstr.id;
-                        ms.setval(contstr.sa_user,contstr.sa_pw,contstr.net_domain);
-                        ms.update({Item_Value:query.item},{Sub_Item:query.main},'system_setup',function(result){
-                            if(result == 1){
-                                s.push({storeid:id,info:'update suceess'});
-                            }else{
-                                s.push({storeid:id,info:'update error'});
-                            }
-                        });
-                    });
-                }
-
-                var _intervar = setInterval(function(){
-                                    if(s.length === listLength){                       
-                                        res.json(s);
-                                        s = 0;
-                                        return false;
-                                    }
-                                },1000);
-
-                var _stopinter = setInterval(function(){
-                    if(s === 0){
-                        clearInterval(_intervar);
-                        s = [];
-                    }
-                },1000);
-                
+                var arg = {
+                    main:query.main,
+                    sub:query.sub,
+                    val:query.val,
+                    id:query.storeid
+                };  
+                my.select_store_contstr(arg.id,function(contstr){
+                    var sql = "update system_setup set Item_Value = '"+arg.val+"' where Main_Item = '"+arg.main+"' and Sub_Item = '"+arg.sub+"'";
+                    console.log(sql);
+                    ms.queryexecute(sql,contstr,function(result){
+                        res.json({id:arg.id,data:result});
+                    });              
+                });
             })();
         break;
     }

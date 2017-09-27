@@ -27,8 +27,7 @@
 		<main class="container" style="padding: 1em 0">
 		<span class="label label-default">SMS</span>
 			<div class="jumbotron">
-				<form class="form-group" id="sms" name="sms">
-				
+				<form class="form-group" id="sms" name="sms">				
 					<label for="select-territory">选择地域:{{territory}}</label>
 					<select id="select-territory" name="select-territory" class="form-control" v-model="territoryname">
 						<option v-for="i in territorylist" v-bind:value="i.id">{{i.territory}}</option>

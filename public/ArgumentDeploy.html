@@ -14,57 +14,36 @@
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/Splash.css">
         <script src="//cdn.bootcss.com/modernizr/2.8.3/modernizr.min.js"></script>
-        <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+		<script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+		<script src="js/Vue_template.js"></script>
     </head>
     <body>
-    
-    	<!-- 遮罩          -->
-    	<div id = "wait">
-			
-			</div>
-    	
-    	<!--  end             -->
-    	<header>
-    		<div>
-    			<nav class="navbar navbar-default navbar-inverse">
-    				<div class="navbar-header">
-    				<button class="navbar-toggle" data-toggle="collapse" data-target="#nav">
-    					<span class="sr-only">collspan</span>
-    					<span class="icon-bar"></span>
-    					<span class="icon-bar"></span>
-    					<span class="icon-bar"></span>
-    				</button>
-    				</div>
-    				<div class="navbar-collapse collapse" id="nav"  style="border-radius: 0">
-    					<ul class="nav navbar-nav">
-    						<li><a class="fontfff" href="index.html"> home</a></li>
-    						<li><a class="fontfff" href="manage.html"> manager</a></li>
-    						
-    					</ul>
-    				</div>
-    			</nav>
-    		</div>
+    	<header id="head">
+			<app-header></app-header>
+			<app-nav :links="links" :ht="ht" @emit-login="exit_login"></app-nav>
     	</header>
-    	<main>
+    	<main id="main">
     		<section class="container-fluid">
   				<!--   选择页面      -->
   				<span class="label label-default">Select Store</span>
     			<div class="row jumbotron">
-    				<div class="col-md-8">
+    				<div class="col-md-12">
     					<form class="form-group">
     						<label for="select-name" class="label label-default">选择门店:(以下门店都是有域名和sa密码，手机查看请开横屏)</label>
-    						<select class="form-control focus" id="select-name" multiple>
- 
+    						<select class="form-control focus" multiple v-model="storeid">
+								<option v-for="item in clients" :value="item.id">{{item.client_name}}</option>
     						</select>
     					</form>
-    					<button type="button" class="btn btn-default btn-block" id="select-store">选取</button>
+    					
     				</div>
-    				<div class="col-md-4">
-    					<label class="label label-default">已选择以下门店，从其中选择一个作为参数模板</label>
-    					<div id="checkbox">   						
-    						
-    					</div>
-    					<button class="btn btn-default btn-block" id="select-reference">确定参考系</button>
+    				<div class="col-md-12">
+						<label class="label label-default">已选择以下门店</label>
+						<hr/>
+						<ul class="list-group">
+							<li  v-for="i in storenames" class="list-group-item">{{i.name}}<span class="badge pull-right"><span></span>{{i.status}}</span></li>
+						</ul>
+						<button class="btn btn-default btn-block" @click="get_batch_info">获取数据</button>
     				</div>
     			</div>
     			<!--   参数展示页面          -->
@@ -74,16 +53,15 @@
     					<div class="col-md-6">
     						<label class="label label-default" for="seach-main">类别查找：</label>
     						<form class="form-group">    							
-    							<select class="form-control" id="seach-main">
-    								
+    							<select class="form-control" v-model="argument_key">
+    								<option v-for="i in sys_main" :value="i">{{i}}</option>
     							</select>    							
     						</form>
-    						<button type="button" class="btn btn-default btn-block" id="seach-mainin">search</button>
     					</div>
     					<div  class="col-md-6">
-    						<label class="label label-default" for="seach-item">模糊搜索：</label>
+    						<label class="label label-default" for="seach-item">模糊搜索：{{sys_keyword}}</label>
     						<form class="form-group">    						
-    						<input type="text" class="form-control" id="seach-item">
+    						<input type="text" class="form-control" v-model="sys_keyword">
     						</form>
     						<button type="button" class="btn btn-default btn-block" id="seach-itemin">search</button>
     					</div>
@@ -92,18 +70,18 @@
     					<table class="table table-bordered">
     						<thead>
     							<tr id="argument-thead">
-    								
+    								<th>main</th><th>Sub(点击修改)</th><th v-for="i in namelist">{{i}}</th>
     							</tr>
     						</thead>
     						<tbody id="argument-tbody">
-    							
+    							<tr v-for="i in arguments"><td>{{i.main}}</td><td @click="show_modal">{{i.sub}}</td><td v-for="j in i.val">{{j}}</td></tr>
     						</tbody>
     					</table>
     				</div>
     			</div>
     		</section>
     	
-		</main>
+		
     
     	<!-- regrster modal  -->
     	<div role="dialog" aria-hidden="true" class="modal" id="modal2" data-backdrop="static">
@@ -115,20 +93,23 @@
     				</div>
     				<div class="modal-body">
     					<form class="form-group">
-    						<label for="argument-name">Argument</label><h5 id="argument-name-label"></h5>
-    						<input class="form-control" id="argument-name" required placeholder="请输入新的值" name="argument-name-label">
+    						<label for="argument-name">Argument</label><h5 id="argument-name-label">{{argument_main}}/{{argument_sub}}</h5>
+    						<input class="form-control" v-model="argument_val" required :placeholder="argument_main" name="argument-name-label">
     					</form>
     					<div id="show-set-success">
-    						
+							<label v-for="i in shows" v-if="i.status == 1" class="label label-success center-block">{{i.name}}:{{i.info}}</label>
+							<label v-for="i in shows" v-else class="label label-error center-block">{{i.name}}:{{i.info}}</label>
     					</div>
     				</div>
     				<div class="modal-footer">
     					<button class="btn btn-default" data-dismiss="modal">close</button>
-    					<button class="btn btn-default" id="argumrnt-configure">配置</button>
+    					<button class="btn btn-default" @click="post_argument_modify">配置</button>
     				</div>
     			</div>
     		</div>
-    	</div>
+		</div>
+		
+	</main>
      
    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
         <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

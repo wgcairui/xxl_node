@@ -10,304 +10,309 @@ $(document).ready(function(){
 				url:"/post",
 				dataType:"json"
 			});
-	
-	//检测登陆状态；
-	var stat = 1;
-	CheckLogin();
-	$("*").hover(function(){
-		stat = 1;
-	});
-	window.setInterval(CheckLogin,60000);
-	
-	//查询信息list
-	GetStoreInfo("select-name");
-	$("#select-submit").on("click",function(){
-		if(!CheckLogin()){
-			
-			$.ajax({
-			url:'/get',
-			type:'GET',
-			data:{
-				sid:"get-store-info",
-				select:$("#select-name>option:selected").val()
-			},success:function(data){
-				$("#store-info").empty();
-				var html = "";
-				$.each(data,function(i,item){
-					html += "<tr><td>"+i+"</td><td>"+item+"</td></tr>";
-				});	
-				$("#store-info").append(html);
+	var vmmanage = new Vue({
+		el:'#head',
+		data:{
+			links:[
+                {href:'index.html',target:'',tittle:'home',text:'Home'},
+                {href:'http://www.microcloud.asia',target:'_blank',tittle:'休闲乐微云程序',text:'微信-微云'},
+                {href:'http://regxxl.microcloud.asia',target:'_blank',tittle:'账号35630密码210',text:'软件新注册/延期'},
+                {href:'ArgumentDeploy.html',target:'',tittle:'批量修改门店设置',text:'批量修改门店设置'},
+				{href:'sms/CheckSms.html',target:'',tittle:'SMS log',text:'SMS log'},
+				{href:'#',target:'',tittle:'Exit Login',text:'Exit Login'}
+			],
+			ht:'Exit Login'
+		},
+
+		//methods
+		methods:{
+			//退出登录
+			exit_login:function(){
+				$.ajax({
+					type:'GET',
+					url:'/get',
+					data:{sid:'exit_login'},
+					success:function(data){
+					    vmbody.CheckLogin();
+					},
+					error:function(data){
+						href.location ='index.html';
+					}	
+				});
 			}
-		});
 		}
-		
 	});
-	//删除门店信息-------
-	$("#delete-store").on("click",function(){
-		var selectid = $("#select-name>option:selected").val();
-		$.ajax({
-			url:'/get',
-			type:'GET',
-			data:{
-				sid:"delete-store",
-				select:selectid
-			},success:function(data){
-				//$("#store-info >option[value="+selectid+"]").remove();
-				GetStoreInfo("select-name");
-				if(data.status === "1"){
-					alert(data.info);
-				}else{
-					alert(data.info+":已成功删除此记录。。");
-				}				
-			}
-		});
-	});
-	
-	//修改客户信息
-	$("#store-info").on("click","td:last-child",function(){
-		
-		$("#modal3").modal("toggle");
-		var key = $(this).prev().text(),
-			val = $(this).text(),
-			inp = $("#modify-val");
-		$("#modify-val > label").text(key);
-		inp.children().last().remove();
-		switch(key){
-			case "territory":
-				var str = "<select class=\"form-control\"></select>";				
-				inp.append(str);
-				var selsct = inp.find("select");
-				get_territory_info(selsct);				
-				break;
-			default:
-				inp.append("<input type=\"text\" required class=\"form-control\" id=\"val\">");
-				$("#modify-val > input").val(val);
-				break;
-		}		
-		
-	});
-	
-	$("#modifyval").on("click",function(){
-		var store = $("#select-name>option:selected").val(),
-			key = $("#modify-val > label").text(),
-			val="";
-			if(key === "territory"){
-				val=$("#modify-val select>option:selected").text();
-			}else{
-				val=$("#modify-val > input").val();
-			}
-		if(!CheckLogin()){
-			$.ajax({
-			type:'POST',
-			url:'/post',
-			data:{
-				sid:"modifyval",
-				store:store,
-				valname:key,
-				val:val
+
+	var vmbody = new Vue({
+		el:'#main',
+		data:{
+			class_btn:['btn','btn-default','btn-block','btn-primary'],
+			clients:[],//门店列表
+			clientsback:[],//门店列表备份
+			storeid:0,//门店id
+			storeinfo:[],//门店信息
+			keyword:'',//检索关键字
+			modify:{  //
+				val:'',
+				pre:'',
+				valback:''
 			},
-			success:function(data){
-				console.log(data.info);				
-				$("#modal3").modal("toggle");
-				$("#select-submit").click();
+			modal_body:true,//if modalbody show
+			territorys:[],
+			optionlist:[],//缓存modify modal option
+			sqlversion:["SQL2000",'SQL2005',"SQL2008","SQL2008r2","SQL2012"],
+			link_name:'',
+			link_src:'',
+			log_num:100,
+			logs:[]
+		},
+		computed:{
+			//获取选择的店名
+			storename:function(){
+				//console.log(this.storeid);
+				if(!this.storeid) return ('未选择');
+				for(var i=0;i<this.clients.length;i++){
+					if(this.clients[i].id == this.storeid){
+						return(this.clients[i].client_name);
+					}
+				}				
+			},
+			//添加网址前戳
+			link_srccm:function(){
+				return ("http://"+this.link_src);
 			}
-		});
-		}
-		
-	});
-	
-	//添加链接 -----------------------------------------------------------------------
-		$("#d").on('click',function(){
-			if(!CheckLogin()){
-				var name = $("#d-ipname").val();
-				var adress = $("#d-ipadress").val();
-				if(name !== '' && adress !== ''){
+		},
+		watch:{
+			//监视模糊关键字变化
+			keyword:function(){
+				this.clients = this.clientsback;
+				var list = [];
+				var len = this.clients.length;
+				for(var i=0;i<len;i++){
+					var name = this.clients[i].client_name;					
+					if(name.indexOf(this.keyword) !== -1){
+						list.push(this.clients[i]);
+					}
+				}
+				this.clients = list;
+			},
+			log_num:function(){
+				if(this.log_num > 200){
+					this.log_num = 200;
+				}
+			}
+		},
+		methods:{
+			//检查登录情况
+			CheckLogin:function(){
+				$.ajax({
+					type:"POST",
+					url:"/login",
+					data:{
+						sid:"ch_login"
+					},
+					success:function(data){
+						if(data.status === "1"){
+							console.log("verification success ");
+							return true;
+						}else if(data.status === "0"){
+							console.log("verification status, stat = 1");
+							$("body").empty();
+							location.href="index.html";
+							return false;
+						}else{
+							$("body").empty();
+							location.href="index.html";
+							return false;
+						}
+					}
+				});	
+			},
+			//获取门店详细信息
+			get_storeinfo:function(){
+				$.ajax({
+					url:'/get',
+					type:'GET',
+					data:{
+						sid:"get-store-info",
+						select:this.storeid
+					},success:function(data){
+						vmbody.storeinfo = data;
+					}
+				});
+			},
+			//删除门店信息
+			delete_store:function(){
+				$.ajax({
+					url:'/get',
+					type:'GET',
+					data:{
+						sid:"delete-store",
+						select:this.storeid
+					},success:function(data){						
+						if(data.status === "1"){
+							alert(data.info);
+						}else{
+							alert(data.info+":已成功删除此记录。。");
+						}				
+					}
+				});
+			},
+			//打印出modal值
+			modify_value:function(event){
+				this.modify.pre = event.target.previousSibling.innerText;
+				this.modify.val = event.target.innerText;
+				this.modify.valback = event.target.innerText;
+				console.log(this.modify.val);
+				$("#modal3").modal("show");
+				switch (this.modify.pre){
+					case "territory":
+						this.modal_body = false;
+						if(this.territorys.length >0){
+							this.optionlist = this.territorys;
+						}else{
+							this.get_modify_val("get-territory-info",'territory');
+						}						
+					break;
+					case "Sql_version":
+						this.modal_body = false;
+						this.optionlist = this.sqlversion;
+					break;
+					default:
+						this.modal_body = true;
+					break;
+				}
+			},
+			//修改客户信息参数值
+			modify_quest:function(){
+				if(this.modify.val === this.modify.valback){
+					alert('值没有变动，操作提交error；');
+					return;
+				}
+				$.ajax({
+					type:'POST',
+					url:'/post',
+					data:{
+						sid:"modifyval",
+						store:this.storeid,
+						valname:this.modify.pre,
+						val:this.modify.val
+					},
+					success:function(data){
+						if(data.status === '1'){
+							vmbody.storeinfo[vmbody.modify.pre] = vmbody.modify.val;
+							console.log(data.info);								
+						}else if(data.status === '0'){
+							alert("数据提交错误；"+data.info);
+						}						
+						$("#modal3").modal("toggle");
+					}
+				});
+			},
+
+			//获取参数list
+			get_modify_val:function(sid,key){
+				if(this.optionlist.length > 0) return this.optionlist;
+				$.ajax({
+					type:'GET',
+					url:'/get',
+					data:{
+						sid:sid
+					},
+					success:function(data){
+						var list = [];
+						for(var i=0;i<data.length;i++){
+							list.push(data[i][key]);
+						}
+						vmbody.optionlist = list;
+						if(sid === 'get-territory-info'){
+							vmbody.territorys = list;
+						}	
+					}					
+				});
+			},
+			//get store list
+			get_store_list:function(){
+				$.ajax({
+					type:'GET',
+					url:'/get',
+					data:{
+						sid:"get-store-list"
+					},success:function(data){
+						vmbody.clients=data;
+						vmbody.clientsback = data;
+					}
+				});
+			},
+			//add-store-update
+			add_store_update:function(){
+				var seriz = $("#storeinfo").serializeArray(),
+					obj_s = {sid:"update-store-info"};			
+				for(var i=0,l=seriz.length;i<l;i++){
+					var obj = seriz[i].name,
+						value = seriz[i].value;
+					obj_s[obj]=value;
+				}			
+				//console.info(obj_s);		
+				$.ajax({
+					type:'POST',
+					url:'/post',
+					data:obj_s,
+					success:function(data){
+						if(data.status !== '0'){
+							alert("提交成功;"+data.info);
+							vmbody.get_store_list(); //更新门店列表;;
+							$("#addstore").click();
+						}else{
+							alert(data.info);
+						}
+					}
+				});
+			},
+			//add link src
+			add_link:function(){
+				if(this.link_name !== '' && this.link_src !== ''){
 					$.ajax({
 						type:'POST',
 						url:'/post',
-					data:{
-						sid:"update-link-adress",
-						name:name,
-						adress:adress
-					},success:function(data){
-						alert("已插入记录："+data.info);
+						data:{
+							sid:"update-link-adress",
+							name:this.link_name,
+							adress:this.link_srccm
+						},success:function(data){
+							alert("已插入记录："+data.info);
+							vmbody.link_name = '';
+							vmbody.link_src = '';
+						}
+					});
+				}
+			},
+			//get log
+			get_log:function(){
+				$.ajax({
+					type:'GET',
+					url:'/get',
+					data:{				
+						sid:"get-log",
+						limit:this.log_num
+					},success:function(data){				
+						vmbody.logs = data;
 					}
 				});
-				}else{
-					alert("值不能为空");
-				}			
+			},
+			//del_log
+			del_log:function(){
+				this.logs = [];
 			}
-			
-		});
-	
-	// 添加本地文件上传 -----------------------------------------------------------------------------
-	$("#file").on("click",function(){
-		
-	});
-	
-	//添加门店 ========================================================================================================================
-	$("#add-store-update").on("click",function(){
-		if(!CheckLogin()){
-			/*var store = {
-			sid:"update-store-info",
-			cname:$("#cname").val(),
-			csname:$("#csname").val(),
-			cspasswd:$("#cspasswd").val(),
-			cdbuser:$("#cdbuser").val(),
-			cdbpasswd:$("#cdbpasswd").val(),
-			csip:$("#csip").val(),
-			cslinkman:$("#cslinkman").val(),
-			cstel:$("#cstel").val(),
-			cwifi:$("#cwifi").val(),
-			cruser:$("#cruser").val(),
-			crpasswd:$("#crpasswd").val(),
-			cmid:$("#cmid").val(),
-			cmname:$("#cmname").val(),
-			cmpasswd:$("#cmpasswd").val(),
-			cmyz:$("#cmyz").val(),
-			cndomain:$("#cndomain").val(),
-			cnuser:$("#cnuser").val(),
-			cnpasswd:$("#cnpasswd").val(),
-			cremark:$("#cremark").val()
-		};*/
-			var seriz = $("#storeinfo").serializeArray(),
-				obj_s = {sid:"update-store-info"};
-			
-			for(var i=0,l=seriz.length;i<l;i++){
-				var obj = seriz[i].name,
-					value = seriz[i].value;
-				obj_s[obj]=value;
-			}
-			
-			console.info(obj_s);
-		
-		$.ajax({
-			type:'POST',
-			url:'/post',
-			data:obj_s,
-			success:function(data){
-				if(data.status !== '0'){
-					alert("提交成功，return(1)");
-					GetStoreInfo("select-name"); //更新门店列表;;
-				}else{
-					alert(data.info);
-				}
-			}
-		});
-		
+		},
+		created:function(){
+			//get storelist
+			this.get_store_list();
+			this.get_modify_val("get-territory-info",'territory');
+
+			//interval
+			window.setInterval(this.CheckLogin,240000);
 		}
-		
 	});
 
-	$("#exit_login").click(function(){
-		$.ajax({
-			type:'GET',
-			url:'/get',
-			data:{sid:'exit_login'},
-			success:function(data){
-				CheckLogin();
-			},
-			error:function(data){
-				href.location ='index.html';
-			}	
-		});
-	});
-	
-	//添加territory info
-	$("#addstore").click(function(){
-		if($(this).hasClass("collapsed")){
-				$("#territory").empty();
-				get_territory_info($("#territory"));
-		}
-		
-	});
-	
-	// 查询日志 =============================================================================
-	$("#get-log").on("click",function(){
-		
-		$.ajax({
-			type:'GET',
-			url:'/get',
-			data:{				
-				sid:"get-log",
-				limit:$("#loglimit").val()
-			},success:function(data){
-		
-				var html = "";
-				$.each(data,function(i,item){
-					html += "<tr><th>"+item.id+"</th><td>"+item.incident+"</td><td>"+item.operate+"</td><td>"+item.tims+"</td></tr>";
-				});
-				$("#loginfo").empty().append(html);
-			}
-		});
-		
-	});
-	
-	$("#del-log").on("click",function(){
-		$("#loginfo").empty();
-	});
-	// 函数===============================================================================================================
-	function GetStoreInfo(id){
-		$.ajax({
-			type:'GET',
-			url:'/get',
-			data:{
-				sid:"get-store-list"
-			},success:function(data){
-				$("#"+id).empty();				
-				$.each(data,function(i,item){					
-					$("#"+id).append("<option value=\""+item.id+"\">"+item.client_name+"</option>");
-				});
-			}
-		});
-	}
-	
-	function CheckLogin(){
-		if(stat === 1){
-		$.ajax({
-			type:"POST",
-			url:"login",
-			data:{
-				sid:"ch_login"
-			},
-			success:function(data){
-				if(data.status === "1"){
-					console.log("verification success ");
-					return true;
-				}else if(data.status === "0"){
-					console.log("verification status, stat = 1");
-					$("body").empty();
-					alert("verification status, stat = 1");
-					location.href="index.html";
-					return false;
-				}else{
-					alert("verification status, stat id undenfine");
-					location.href="index.html";
-					return false;
-				}
-			}
-		});
-			stat = 0;
-		}
-	}
-	
-	function get_territory_info(obj){
-		var str="";
-		$.ajax({
-			type:'GET',
-			url:'/get',
-			data:{
-				sid:"get-territory-info"
-			},
-			success:function(data){				
-				$.each(data,function(i,item){
-					str += "<option value=\""+item.id+"\">"+item.territory+"</option>";
-				});
-				obj.append(str);
-				return true;
-			}
-			
-		});
-		
-	}
 });

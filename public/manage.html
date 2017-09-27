@@ -12,54 +12,45 @@
         <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="css/main.css">
         <script src="//cdn.bootcss.com/modernizr/2.8.3/modernizr.min.js"></script>
-        <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+		<script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+		<script src="js/Vue_template.js"></script>
     </head>
     <body>
-    <header>
-    	<nav class="navbar navbar-default navbar-inverse" role="navigation">
-    		<div class="navbar-header">
-    			<button class="navbar-toggle" data-toggle="collapse" data-target="#nav2" type="button">
-    				<span class="sr-only">collapse</span>
-    				<span class="icon-bar"></span>
-    				<span class="icon-bar"></span>
-    				<span class="icon-bar"></span>
-    			</button>
-    		</div>
-    		<div class="navbar-collapse collapse center-block" id="nav2" >
-    			<ul class="nav navbar-nav">
-    				<li><a href="index.html" class="fontfff"><span class="glyphicon glyphicon-home">  home</span></a></li>
-    				<li><a href="http://regxxl.microcloud.asia" class="fontfff tip" title="账号35630密码210" data-toggle="tooltip">软件新注册/延期</a></li>
-    				<li><a href="http://www.microcloud.asia" class="fontfff tip" target="_blank" title="休闲乐微云程序">微信-微云</a></li>			
-					<li><a href="ArgumentDeploy.html" class="fontfff" title="deploy" target="_blank">批量修改门店设置</a></li>
-					<li><a href="sms/CheckSms.html" class="fontfff" title="sms" target="_blank">SMS log</a></li>
-					<li class="right"><a href="#" class="fontfff" id = "exit_login">Exit Login</a></li>
-    			</ul>
-    		</div>
-    	</nav>
+    <header id="head">
+		<app-header></app-header>
+    	<app-nav :links="links" :ht="ht" @emit-login="exit_login"></app-nav>
     </header>
-	<!-- modal wait -->
-	<div id="wait"></div>
 	
-    <main class="container">
+	
+    <main class="container" id="main">
     	<div class="row">
     	
-    		<section class=" col-md-6">
+    		<section class=" col-md-12">
     			<span class="label label-default">查询客户信息</span>
     			<article class="jumbotron">
-    				<form class="form-group">
-    					<label for="select-name">选择门店:</label>
-    					<select class="form-control" id="select-name">
-    						
-    					</select>
-    				</form>
-    				<button type="button" class="btn btn-default btn-block btn-primary" id="select-submit">submit</button>
+    				<form class="form-inline">
+						<div class="form-group">
+							<label for="se-territory">模糊搜索:{{keyword}}</label>
+							<input type="text" class="form-control" id="se-territory" v-model="keyword">
+						</div>
+						<div class="form-group pull-right">							
+							<label for="select-name">选择门店:{{storename}}</label>						
+    						<select class="form-control" id="select-name" v-model="storeid">
+    							<option v-for="i in clients" :value="i.id">{{i.client_name}}</option>
+							</select>
+							
+						</div>
+					</form>
+					<hr/>
+    				<button type="button" :class="class_btn" @click="get_storeinfo">查询</button>
     				<hr/>
-    				<table class="table table-hover" id="store-info">
-    					
+    				<table class="table table-hover"><!-- id="store-info"> -->
+							<tr v-if="item !== 'id'" v-for="(i,item) in storeinfo"><td>{{item}}</td><td @click="modify_value">{{i}}</td></tr>
     				</table>
     				<hr/>
     				<div class="btn-group pull-right">
-					<a class="btn btn-default" href="#add-store">add store</a>
+					<a class="btn btn-default" href="#add-store">添加新门店</a>
 					<button class="btn btn-default" id="delete-store">delete-store</button>
 					</div>
 				</article>    			
@@ -67,17 +58,17 @@
     		
     	
     		
-    		<section class=" col-md-6" id="add-store">
+    		<section class=" col-md-12" id="add-store">
     			<span class="label label-default">add-store</span>
     			<article class="jumbotron">
-    				<button class="btn btn-default btn-success btn-block collapsed" id="addstore" data-toggle="collapse" data-target="#input-store-info">添加门店<span class="caret"></span></button>
+    				<button class="btn btn-default btn-success btn-block collapsed" id="addstore"  data-toggle="collapse" data-target="#input-store-info">添加门店<span class="caret"></span></button>
     				<div class="collapse" id="input-store-info">
     					<form class="form-group" name="storeinfo" id="storeinfo">
     						<label for="client_name">名称:</label>
     						<input type="text" id="client_name" name="client_name" class="form-control">
     						<label for="territory">地域:</label>
-    						<select class="form-control" id="territory" name="territory">
-    							
+    						<select class="form-control" name="territory">
+									<option v-for="i in territorys" :value="i" >{{i}}</option>
     						</select>
     						<label for="server_name">服务器：</label>
     						<input type="text" class="form-control" value="server" id="server_name" name="server_name">
@@ -85,11 +76,7 @@
     						<input type="text" id="server_pw" name="server_pw" class="form-control">
     						<label for="Sql_version">数据库版本:</label>
     						<select id="Sql_version" name="Sql_version" class="form-control">
-    							<option value="SQL2000" selected>SQL2000</option>
-    							<option value="SQL2005">SQL2005</option>
-    							<option value="SQL2008">SQL2008</option>
-    							<option value="SQL2008r2">SQL2008r2</option>
-    							<option value="SQL2012">SQL2012</option>
+    							<option v-for="i in sqlversion" :value="i">{{i}}</option>
     						</select>
     						<label for="sa_user">数据库用户：</label>
     						<input type="text" class="form-control" id="sa_user" name="sa_user" value="sa">
@@ -127,7 +114,7 @@
     						<input type="text" id="remark" name="remark" class="form-control">
     						
     					</form>
-    					<button type="button" class="btn btn-default btn-success btn-block" id="add-store-update">sumbit</button>
+    					<button type="button" class="btn btn-default btn-success btn-block" @click="add_store_update">sumbit</button>
     				</div>
 				</article>    			
     		</section>
@@ -136,12 +123,12 @@
     			<span class="label label-default">添加云链接</span>
     			<article class="jumbotron">
     				<form class="form-group">
-					<label class="control-label" for="d-ipname">链接名称：</label>
-					<input class="form-control" type="text" id="d-ipname" >
-					<label class="control-label" for="d-ipad">链接地址：</label>
-					<input class="form-control" type="text" id="d-ipadress" value="http://">
+					<label class="control-label" for="d-ipname">链接名称：{{link_name}}</label>
+					<input class="form-control" type="text" id="d-ipname" v-model="link_name" required>
+					<label class="control-label" for="d-ipad">链接地址：{{link_srccm}}</label>
+					<input class="form-control" type="text" id="d-ipadress" v-model="link_src">
 				</form>
-				<button class="btn btn-default btn-block btn-primary" id="d">提交</button>				
+				<button class="btn btn-default btn-block btn-primary" @click="add_link">提交</button>				
 				</article>    			
     		</section>
     		
@@ -161,20 +148,20 @@
     		
     		<section class="col-md-12">
     			<span class="label label-default">查询日志</span>
-    			<article class="jumbotron">
-    				<h4>log</h4>
+    			<article class="jumbotron">    				
+    				<input type="number" :value="log_num" v-model="log_num">
+					<button class="btn btn-default  btn-primary" @click="get_log">查询</button>
+					<button class="btn btn-default" @click="del_log">清空</button>
+					<h4>log</h4>
     				<table class="table" id="loginfo">
-    					
+						<tr v-for="item in logs"><th>{{item.id}}</th><td>{{item.incident}}</td><td>{{item.operate}}</td><td>{{item.tims}}</td></tr>
     				</table>
-    				<input type="number" value="100" id="loglimit">
-					<button class="btn btn-default  btn-primary" id="get-log">查询</button>
-					<button class="btn btn-default" id="del-log">清空</button>
 				</article>    			
     		</section>
     		
     		
     	</div>
-    </main>
+    
     	<div class="modal fade" role="dialog" tabindex="-1" aria-hidden="true" id="modal3">
     			<div  class="modal-dialog">
     				<div class="modal-content">
@@ -183,19 +170,22 @@
     						<h4 class="center-block">修改门店参数</h4>
     					</div>
     					<div class="modal-body">
-    						<form class="form-group" id="modify-val">
-    							<label for="valname"></label>
-								<input type="text" placeholder="" required class="form-control" id="val">
+    						<form class="form-group">
+    							<label for="valname">{{modify.pre}}</label>
+								<input v-if="modal_body" type="text" :placeholder="modify.val" required class="form-control" v-model="modify.val">
+								<select v-else class="form-control" v-model="modify.val">
+									<option v-for="i in optionlist" :value="i">{{i}}</option>
+								</select>
     						</form>
     					</div>
     					<div class="modal-footer">
     						<button class="btn btn-default" data-dismiss="modal">close</button>
-    						<button class="btn btn-default btn-success" id="modifyval">确认修改</button>
+    						<button class="btn btn-default btn-success" @click="modify_quest">确认修改</button>
     					</div>
     				</div>
     			</div>
     		</div>
-     
+		</main>
    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
         <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="js/plugins.js"></script>

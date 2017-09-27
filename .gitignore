@@ -1,5 +1,5 @@
-node_modules/*
-passwd/*
+node_modules
+passwd
 log/*
 *.exe
 *.php

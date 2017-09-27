@@ -7,206 +7,239 @@ $(function(){
 				url:"/get",
 				dataType:"json"
 	});
-	$.getScript('js/wait.js'); 
-	//查询信息list
-	GetStoreInfo("select-name");
-	var stores; //缓存选择的门店对象
-	var select_store = []; //缓存选择的门店id
-	var select_main = [];
-	
-	//显示选择器
-	$("#select-store").click(function(){
-		stores = $("#select-name>option:selected");
-		var checkbox = $("#checkbox"),
-			html = "";
-		select_store = [];
-		checkbox.empty();
-		stores.each(function(){
-			var text = $(this).text();
-			var val = $(this).val();			
-			select_store.push(val);
-			html+="<div class=\"radio\"><label><input type=\"radio\" name=\"radio\" id=\""+val+"\" value=\""+val+"\">"+text+"</label></div>";
-		});
-		checkbox.append(html);
-	});
-	
-	//show select-reference
-	$("#checkbox").on("focusin",".radio",function(){
-		$("#select-reference").removeClass("hidden");
-	});
-	
-	//确定参考系之后提交，刷新设置参数
-	$("#select-reference").click(function(){
-		var select_refereence_store = $("#checkbox input:checked").val();
-		if(!select_refereence_store){
-			return false;
-		}
+	$.getScript('js/wait.js');
 
-		$.ajax({
-			data:{				
-				sid:"get_reference_argument",				
-				//storeid:select_store.join("-"),
-				reference_store:select_refereence_store				
-			},
-			success:function(data){
-				var html = '';
-				var argument_tbody = $("#argument-tbody");
-				var argment_thead = $("#argument-thead");
-				argment_thead.empty().append("<th>main</th><th>Argument</th><th>参考门店</th>");
-				argument_tbody.empty();
+	var vmmanage = new Vue({
+		el:'#head',
+		data:{
+			links:[
+                {href:'index.html',target:'',tittle:'home',text:'Home'},
+                {href:'manage.html',target:'',tittle:'ht',text:'Manage'},
+				{href:'sms/CheckSms.html',target:'',tittle:'SMS log',text:'SMS log'},
+				{href:'#',target:'',tittle:'Exit Login',text:'Exit Login'}
+			],
+			ht:'Exit Login'
+		},
 
-				if(!data.info){
-					$.each(data,function(i,item){
-						html +="<tr><td>"+item.Main_Item+"</td><td>"+item.Sub_Item+"</td><td>"+item.Item_Value+"</td></tr>";
-						select_main.push(item.Main_Item);		
-						
-					});	
-					argument_tbody.append(html);
-					//处理类别选择表单 seach-main
-					var temp = un(select_main),
-						str="";
-					for(var a=0;a<temp.length;a++){	
-						str+="<option value=\""+a+"\">"+temp[a]+"</option>";
-					}
-					$("#seach-main").append(str);
-					
-				//下面开始获取已选择门店列表的参数值；
-					for(var i=0;i<select_store.length;i++){
-						if(select_store[i] !== select_refereence_store){
-							get_s(i);							
-						}						
-					}					
-				}else{
-					console.log(data.info);
-					alert(data.info);
-				}			
-			}		
-		});	
-			
-	});
-	//按类别显示
-	$("#seach-mainin").click(function(){
-		
-		var select_main = $("#seach-main>option:selected").text();
-		var tr = $("#argument-tbody>tr");
-		tr.removeClass("hidden")
-		.not(function(){			
-			return $(this).children().eq(0).text() === select_main;
-		}).addClass("hidden");
-	});
-	
-	//按模糊搜索显示
-	$("#seach-itemin").click(function(){
-		var select_item = $("#seach-item").val();
-		var tr = $("#argument-tbody>tr");
-		tr.removeClass("hidden")
-		.not(function(){
-			return $(this).children().eq(1).text().indexOf(select_item) > 0;
-		}).addClass("hidden");
-	});
-	
-	//修改配置
-	$("#argument-tbody").on("click","tr",function(){
-		var main = $(this).children().eq(1).text();
-		var item = $(this).children().eq(2).text();
-		$("#argument-name-label").text(main);
-		$("#argument-name").val(item);
-		$("#argument-name").show();
-		$("#show-set-success").empty();
-		$("#modal2").modal("show");
-		
-	});
-	
-	$("#argumrnt-configure").click(function(){
-		var main = $("#argument-name-label").text();
-		var item = $("#argument-name").val();
-		if(item === ""){
-			return false;
-		}
-		$.ajax({
-			data:{
-				sid:"set-argument",
-				main:main,
-				item:item,
-				storelist:select_store
-			},
-			success:function(data){
-				var show_set_success = $("#show-set-success"),
-					html ="";
-				show_set_success.empty();
-				$("#argument-name").hide();
-				$.each(data,function(i,item){
-					console.log(item);
-					html +="<label class=\"label label-success center-block\">"+get_store_name(item.storeid)+":"+item.info+"</label>";		
+		//methods
+		methods:{
+			//退出登录
+			exit_login:function(){
+				$.ajax({
+					type:'GET',
+					url:'/get',
+					data:{sid:'exit_login'},
+					success:function(data){
+						CheckLogin();
+					},
+					error:function(data){
+						href.location ='index.html';
+					}	
 				});
-				show_set_success.append(html);
-			}
-		});
-	});
-	
-	
-	
-	//数组去重
-	function un(array){
-		var tmp = [];
-		var json = {};
-		for(var i=0;i<array.length;i++){
-			if(!json[array[i]]){
-				tmp.push(array[i]);
-				json[array[i]] = 1;
 			}
 		}
-		//console.log(tmp);
-		return tmp;
-	}
-	
-	//获取函数
-	function get_s(i){
-		$.ajax({
-			data:{
-				sid:"get_reference_argument",
-				reference_store:select_store[i]
-			},
-			success:function(data){
-				var name = get_store_name(select_store[i]);
-				if(!data.status){
-					$("#argument-thead").append("<th>"+name+"</th>");
-					$.each(data,function(i,item){
-						var td = $("#argument-tbody td:contains("+item.Sub_Item+")");
+	});
+
+	var vmbody = new Vue({
+		el:'#main',
+		data:{
+			clients:[],//缓存选择的门店对象
+			clientsback:[],
+			storeid:[],//缓存选择的门店id
+			storenames:[],//缓存重构已选择门店列表信息
+			storeid_select:[],//缓存重构已选择门店列表id
+			namelist:[],//缓存以下载的门店list
+			select_main:[],//缓存下载的系统设置数据
+			sys_main:[],//缓存参数类别
+			sys_keyword:'',//缓存关键字
+			sys_argument:[],//缓存重构的argument info
+			argument_key:'',//参数选择关键字
+			argument_sub:'',
+			argument_main:'',
+			argument_val:'',
+			argument_valback:'',
+			modal_show:[],
 						
-						if(td.prev().text() == item.Main_Item){
-							//console.log(item.Sub_Item);
-							td.parent().append("<td>"+item.Item_Value+"</td>");						
-						}						
-					});					
-				}else{
-					select_store.splice(i,1);
-					console.log(name+data.info);
-					console.log(select_store);
+		},
+		computed:{
+			//
+			main:function(){
+				var tmplist = [];
+				var ma = this.select_main;
+				if(ma.length ===0) return ma;
+				for(var i=0;i<ma.length;i++){
+					if(i === 0){
+						tmplist = ma[i];
+					}
+				}
+				return tmplist;
+			},
+			
+			//详细的参数列表
+			arguments:function(){
+				if(this.argument_key !== undefined){
+					var main = this.sys_argument;
+					var list = [];
+					for(var i=0;i<main.length;i++){						
+						if(main[i].main == this.argument_key) list.push(main[i]);
+					}					
+					return list;
+				}
+				return this.sys_argument;
+			},
+			//格式化modal-show
+			shows:function(){
+				var list = [];
+				var show = this.modal_show;
+				for(var i=0;i<show.length;i++){
+					list.push({name:this.getname(show[i].id),status:show[i].data.status,info:show[i].data.info});
+				}
+				return list;
+			}
+		},
+		watch:{
+			//检测已选择的列表变化，更新storenames
+			storeid:function(){
+				this.storenames = [];
+				for(var i=0;i<this.storeid.length;i++){
+					for(var ii=0;ii<this.clients.length;ii++){
+						if(this.clients[ii].id == this.storeid[i]){
+							this.storenames.push({id:this.clients[ii].id,name:this.clients[ii].client_name,status:'cont success'});
+						}
+					}
+				}
+				//console.log(this.storenames);
+			}		
+		},
+		methods:{
+			//show modal
+			show_modal:function(event){
+				$("#modal2").modal("show");
+				//console.log(event);
+				this.argument_sub = event.target.innerText;
+				this.argument_main = event.target.previousSibling.innerText;
+				this.argument_val = event.target.nextSibling.innerText;
+				
+			},
+			//post_argument_modify
+			post_argument_modify:function(){
+				console.log(this.storeid_select);
+				for(var i=0;i<this.storeid_select.length;i++){					
+					$.ajax({
+						data:{
+							sid:"set-argument",
+							main:this.argument_main,
+							sub:this.argument_sub,
+							val:this.argument_val,
+							storeid:this.storeid_select[i]
+						},success:function(data){
+							vmbody.modal_show.push(data);
+						}
+					});
+				}
+			},
+			//get store list
+			get_store_list:function(){
+				$.ajax({
+					type:'GET',
+					url:'/get',
+					data:{
+						sid:"get-store-list-domain"
+					},success:function(data){						
+						vmbody.clients=data;
+						vmbody.clientsback = data;
+					}
+				});
+			},
+			//显示argument
+			show_batch_info:function(){
+				this.mainnum = false;
+				this.namelist = [];
+				this.storeid_select = [];
+				this.sys_argument = [];//清空
+				var main = this.select_main;
+				var list = [];
+				for(var i=0;i<main.length;i++){ //循环已获取门店的参数列表
+					var ma = main[i].data;
+					this.namelist.push(this.getname(main[i].id));
+					this.storeid_select.push(main[i].id);	//获取门店名称
+					if(i === 0){ //判断是否为头一个门店，true则构建obj，预留val数组										
+						for(var j=0;j<ma.length;j++){ //循环单个门店的data参数，获取参数列表
+							var m = ma[j];						
+							list.push({main:m.Main_Item,sub:m.Sub_Item,val:[m.Item_Value]});
+						}
+					}else{ //false则遍历list，sub&&main对号则push val数组
+						for(var k=0;k<ma.length;k++){
+							for(var l=0;l<list.length;l++){
+								if(ma[k].Sub_Item === list[l].sub && ma[k].Main_Item === list[l].main){
+									list[l].val.push(ma[k].Item_Value);
+								}
+							}
+						}
+					}
+				}				
+				this.sys_argument = list;
+				//console.log(this.storeid_select);
+			},
+			//get store name
+			getname:function(id){
+				var names = this.storenames;
+				for(var i=0;i<names.length;i++){
+					if(names[i].id == id){
+						return names[i].name;
+					}
+				}
+			},
+			//获取已选择列表的参数
+			get_batch_info:function(){
+				this.select_main = [];
+				for(var i=0;i<this.storeid.length;i++){
+					g(this.storeid[i],this.storeid.length,i);
+				}				
+				//
+				function g(id,length,ilen){
+					$.ajax({
+						data:{
+							sid:"get_reference_argument",
+							storeid:id
+						},success:function(data){
+							//判断获取状态，							
+							if(data.status == '0'){								
+								setstatus(id,data.info,true);
+								return;
+							}
+							//遍历data，获取item-main
+							for(var i=0;i<data.length;i++){
+								var vmain = vmbody.sys_main,
+									main = data[i].Main_Item;
+								if(vmain.indexOf(main) == -1){
+									vmain.push(main);
+								}
+							}
+							//push data to select_main
+							vmbody.select_main.push({id:id,data:data});
+
+							if(length-1 === ilen){ //判断是否执行到最后一个ajax，true则show_batch_info
+								vmbody.show_batch_info();
+							}
+						}
+					});
+				}
+				//设置storenames.status的状态参数变化
+				function setstatus(id,info,bool){
+					var s = vmbody.storenames;
+					for(var i=0;i<s.length;i++){
+						if(s[i].id == id && bool){
+							s[i].status = info;
+						}
+					}
 				}
 			}
-		});
-	}
+		},
+		created:function(){
+			this.get_store_list();
+			
+		}
+	});
 	
-	function get_store_name(id){
-		return($("#select-name>option[value='"+id+"']").text());
-	}
-	
-	//获取门店列表
-	
-	function GetStoreInfo(id){
-		$.ajax({
-			url:"/get",
-			data:{
-				
-				sid:"get-store-list-domain"
-			},success:function(data){
-				$("#"+id).empty();
-				$("#panel1").removeClass("hidden");
-				$.each(data,function(i,item){					
-					$("#"+id).append("<option value=\""+item.id+"\">"+item.client_name+"</option>");
-				});
-			}
-		});
-	}
 });

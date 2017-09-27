@@ -1,6 +1,7 @@
 // JavaScript Document
 $(document).ready(function(){
 	"use strict";
+	$.getScript('../js/wait.js');
 	$.ajaxSetup({
 		sync:"true",
 		type:"GET",

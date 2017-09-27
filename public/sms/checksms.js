@@ -1,6 +1,7 @@
 // JavaScript Document
 $(document).ready(function(){
 	"use strict";
+	$.getScript('../js/wait.js');
 	$.ajax({
 		type:"GET",
 		url:"/get",
