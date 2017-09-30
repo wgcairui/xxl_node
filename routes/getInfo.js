@@ -13,6 +13,7 @@ route.get('/',function(req,res){
     console.log(sid);    
     switch(sid){
         //index.html file download
+        //返回本地下载链接地址
         case 'xxl-down':
             fs.readdir('./public/file/',function(err,files){
                 Format.FormatLogErr(err);
@@ -22,12 +23,14 @@ route.get('/',function(req,res){
         break;
         
         //index.html file link
+        //返回网络下载链接地址
         case 'get-down-files':
             my.query('SELECT name,adress,title FROM down',function(result){
                 res.json(result);
             });
         break;
-
+        
+        //返回客户的店名，地狱info
         case "get-client-name":
             my.query('select client_name,territory from client_data',function(result){
                 res.json(result);
@@ -35,12 +38,14 @@ route.get('/',function(req,res){
         break;
 
         //manage.html get store list =================================
+        //返回all门店list
         case 'get-store-list':
             my.query("SELECT id,client_name,territory FROM `client_data`",function(result){
                 res.json(result).end();
             });
         break;
-
+        
+        //
         case 'get-territory-info':
             my.query("SELECT territory FROM `territory`",function(result){
                 res.json(result).end();

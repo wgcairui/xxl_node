@@ -19,13 +19,23 @@
     <body>
     <header id="head">
 		<app-header></app-header>
-    	<app-nav :links="links" :ht="ht" @emit-login="exit_login"></app-nav>
+		<app-nav :links="links" :ht="ht" @emit-login="exit_login"></app-nav>		
     </header>
 	
 	
     <main class="container" id="main">
     	<div class="row">
-    	
+				<!-- Modal -->
+			<app-modal :ids="modal.ids" :title="modal.title" :btntext="modal.btntext" @modal="modify_quest">			
+				<form class="form-group">
+					<label for="valname">{{modify.pre}}</label>
+					<input v-if="modal_body" type="text" :placeholder="modify.val" required class="form-control" v-model="modify.val">
+					<select v-else class="form-control" v-model="modify.val">
+						<option v-for="i in optionlist" :value="i">{{i}}</option>
+					</select>
+				</form>
+			</app-modal>
+
     		<section class=" col-md-12">
     			<span class="label label-default">查询客户信息</span>
     			<article class="jumbotron">
@@ -145,7 +155,22 @@
 					
 				</article>    			
     		</section>
-    		
+			
+    		<div class="clearfix"></div>		
+    		<section class=" col-md-12">
+    			<span class="label label-default">注册软件锁</span>
+    			<article class="jumbotron">
+    				<form class="form-group">
+					<label class="control-label">软件锁序列号：{{reg_key}}</label>
+					<input class="form-control" type="text" v-model="reg_key" required>
+					<label class="control-label">注册至：{{getdate}}</label>
+					<input class="form-control" type="text" v-model="reg_date">
+					<label class="label label-default">{{key}}</label>
+				</form>
+				<button class="btn btn-default btn-block btn-primary" @click="reg_xxl">提交</button>				
+				</article>    			
+			</section>
+			
     		<section class="col-md-12">
     			<span class="label label-default">查询日志</span>
     			<article class="jumbotron">    				
@@ -157,35 +182,9 @@
 						<tr v-for="item in logs"><th>{{item.id}}</th><td>{{item.incident}}</td><td>{{item.operate}}</td><td>{{item.tims}}</td></tr>
     				</table>
 				</article>    			
-    		</section>
-    		
-    		
-    	</div>
-    
-    	<div class="modal fade" role="dialog" tabindex="-1" aria-hidden="true" id="modal3">
-    			<div  class="modal-dialog">
-    				<div class="modal-content">
-    					<div class="modal-header">
-    						<button class="close" data-dismiss="modal">&times;</button>
-    						<h4 class="center-block">修改门店参数</h4>
-    					</div>
-    					<div class="modal-body">
-    						<form class="form-group">
-    							<label for="valname">{{modify.pre}}</label>
-								<input v-if="modal_body" type="text" :placeholder="modify.val" required class="form-control" v-model="modify.val">
-								<select v-else class="form-control" v-model="modify.val">
-									<option v-for="i in optionlist" :value="i">{{i}}</option>
-								</select>
-    						</form>
-    					</div>
-    					<div class="modal-footer">
-    						<button class="btn btn-default" data-dismiss="modal">close</button>
-    						<button class="btn btn-default btn-success" @click="modify_quest">确认修改</button>
-    					</div>
-    				</div>
-    			</div>
-    		</div>
-		</main>
+    		</section>   		
+		</div>
+	</main>
    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
         <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="js/plugins.js"></script>

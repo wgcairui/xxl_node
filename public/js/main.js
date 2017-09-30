@@ -151,10 +151,13 @@ Vue.component('app-moreinfo',{
 
 			//登陆验证
 			login_check:function(){
+				var s = SHA1(this.passwd);
+				console.log(s);
+				
 				var data = {
 					sid:"logins",
 					user:this.user,
-					passwd:this.passwd
+					passwd:s
 				};
 				$.ajax({
 					type:"POST",

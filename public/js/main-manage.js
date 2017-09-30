@@ -33,7 +33,7 @@ $(document).ready(function(){
 					url:'/get',
 					data:{sid:'exit_login'},
 					success:function(data){
-					    vmbody.CheckLogin();
+					    location.href="index.html";
 					},
 					error:function(data){
 						href.location ='index.html';
@@ -58,13 +58,23 @@ $(document).ready(function(){
 				valback:''
 			},
 			modal_body:true,//if modalbody show
+			modal:{
+				ids:'modal3',
+				btntext:'确认修改',
+				title:'Modify Store Info'
+			},
 			territorys:[],
 			optionlist:[],//缓存modify modal option
 			sqlversion:["SQL2000",'SQL2005',"SQL2008","SQL2008r2","SQL2012"],
 			link_name:'',
 			link_src:'',
 			log_num:100,
-			logs:[]
+			logs:[],
+
+			//reg
+			reg_key:'',
+			reg_date:'',
+			key:''
 		},
 		computed:{
 			//获取选择的店名
@@ -80,6 +90,19 @@ $(document).ready(function(){
 			//添加网址前戳
 			link_srccm:function(){
 				return ("http://"+this.link_src);
+			},
+			//formart date
+			getdate:function(){
+				if(this.reg_date === ''){
+					var d = new Date();
+					var Y = d.getFullYear(),
+						M = d.getMonth()+1,
+						D = d.getDate();
+					
+					this.reg_date = [Y,M,D].join('-');
+					return this.reg_date;
+				}
+				return this.reg_date;
 			}
 		},
 		watch:{
@@ -103,31 +126,24 @@ $(document).ready(function(){
 			}
 		},
 		methods:{
-			//检查登录情况
-			CheckLogin:function(){
+			//reg xxl
+			reg_xxl:function(){
 				$.ajax({
-					type:"POST",
-					url:"/login",
+					url:'/post',
+					type:'POST',
 					data:{
-						sid:"ch_login"
+						sid:'xxl_register',
+						key:this.reg_key,
+						regdate:this.reg_date
 					},
 					success:function(data){
-						if(data.status === "1"){
-							console.log("verification success ");
-							return true;
-						}else if(data.status === "0"){
-							console.log("verification status, stat = 1");
-							$("body").empty();
-							location.href="index.html";
-							return false;
-						}else{
-							$("body").empty();
-							location.href="index.html";
-							return false;
-						}
+						console.log(data);
+						for(var i in data) console.log(i);
+						vmbody.key = data;
 					}
-				});	
+				})
 			},
+			
 			//获取门店详细信息
 			get_storeinfo:function(){
 				$.ajax({
@@ -309,9 +325,6 @@ $(document).ready(function(){
 			//get storelist
 			this.get_store_list();
 			this.get_modify_val("get-territory-info",'territory');
-
-			//interval
-			window.setInterval(this.CheckLogin,240000);
 		}
 	});
 

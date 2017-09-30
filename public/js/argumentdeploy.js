@@ -77,6 +77,7 @@ $(function(){
 			
 			//详细的参数列表
 			arguments:function(){
+				if(this.argument_key == 'all') return this.sys_argument;
 				if(this.argument_key !== undefined){
 					var main = this.sys_argument;
 					var list = [];
@@ -85,6 +86,7 @@ $(function(){
 					}					
 					return list;
 				}
+				
 				return this.sys_argument;
 			},
 			//格式化modal-show
@@ -220,7 +222,10 @@ $(function(){
 							vmbody.select_main.push({id:id,data:data});
 
 							if(length-1 === ilen){ //判断是否执行到最后一个ajax，true则show_batch_info
+								console.log('last get argument ajax;length:'+length+';/i:'+ilen+1);
 								vmbody.show_batch_info();
+							}else{
+								console.log('last get argument ajax;length:'+length+'/i:'+ilen+1);
 							}
 						}
 					});

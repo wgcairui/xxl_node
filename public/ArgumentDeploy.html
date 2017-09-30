@@ -54,6 +54,7 @@
     						<label class="label label-default" for="seach-main">类别查找：</label>
     						<form class="form-group">    							
     							<select class="form-control" v-model="argument_key">
+									<option value="all">全部</option>
     								<option v-for="i in sys_main" :value="i">{{i}}</option>
     							</select>    							
     						</form>

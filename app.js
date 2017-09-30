@@ -25,11 +25,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser(credentials.cookieSecret));
 
+app.use(express.static(path.join(__dirname, 'public')));//静态资源配置，静态资源不会传递到后面
+
 //add log请求的地址，ajax，url
 app.use(log.log_request);
-
-
-app.use(express.static(path.join(__dirname, 'public')));//静态资源配置，静态资源不会传递到后面
 
 app.use('/', index);
 
