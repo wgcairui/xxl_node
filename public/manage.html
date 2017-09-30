@@ -66,7 +66,21 @@
 				</article>    			
     		</section>
     		
-    	
+			<div class="clearfix"></div>		
+    		<section class=" col-md-12">
+    			<span class="label label-default">注册软件锁</span>
+    			<article class="jumbotron">
+    				<form class="form-group">
+					<label class="control-label">软件锁序列号：{{reg_key}}</label>
+					<input class="form-control" type="text" v-model="reg_key" required>
+					<label class="control-label">注册至：{{getdate}}</label>
+					<input class="form-control" type="text" v-model="reg_date">
+					<label class="label label-default">{{key}}</label>
+				</form>
+				<button class="btn btn-default btn-block btn-primary" @click="reg_xxl">提交</button>				
+				</article>    			
+			</section>
+			
     		
     		<section class=" col-md-12" id="add-store">
     			<span class="label label-default">add-store</span>
@@ -156,21 +170,7 @@
 				</article>    			
     		</section>
 			
-    		<div class="clearfix"></div>		
-    		<section class=" col-md-12">
-    			<span class="label label-default">注册软件锁</span>
-    			<article class="jumbotron">
-    				<form class="form-group">
-					<label class="control-label">软件锁序列号：{{reg_key}}</label>
-					<input class="form-control" type="text" v-model="reg_key" required>
-					<label class="control-label">注册至：{{getdate}}</label>
-					<input class="form-control" type="text" v-model="reg_date">
-					<label class="label label-default">{{key}}</label>
-				</form>
-				<button class="btn btn-default btn-block btn-primary" @click="reg_xxl">提交</button>				
-				</article>    			
-			</section>
-			
+    		
     		<section class="col-md-12">
     			<span class="label label-default">查询日志</span>
     			<article class="jumbotron">    				

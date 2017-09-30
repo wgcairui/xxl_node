@@ -8,6 +8,7 @@ var ejs = require('ejs');
 
 var index = require('./routes/index');
 var log = require('./lib/log_requst');
+var checkStatus = require('./lib/Check_status');
 var credentials = require('./lib/signed');
 
 var app = express();
@@ -29,6 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));//静态资源配置，�
 
 //add log请求的地址，ajax，url
 app.use(log.log_request);
+app.use('/',checkStatus);
 
 app.use('/', index);
 
