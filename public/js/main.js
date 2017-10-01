@@ -5,6 +5,15 @@ $(document).ready(function(){
 		type:'GET',
 		url:'/get',
 		dataType:'json'
+	});
+	$.ajaxPrefilter('json',function(xhr,option){
+		var data = option.data;
+		//console.log(data);
+		for(var i in data){
+			console.log({i:data[i],ii:SHA1(data[i])});
+			option.data[i] = '999';
+		}
+		//console.log(data);
 	});	
 //el:vm
 //app showmore
@@ -112,18 +121,121 @@ Vue.component('app-moreinfo',{
 		el:"#head",
 		data:{
 			links:[
-                {href:'sms/sms.html',target:'_blank',tittle:'SMS',text:'短信自助充值服务'},
-                {href:'http://www.microcloud.asia',target:'_blank',tittle:'休闲乐微云程序',text:'微信-微云'},
-                {href:'#s10',target:'',tittle:'软件供应客户',text:'企业客户'},
-                {href:'#s15',target:'',tittle:'展示最新消息',text:'最新公告'},
-                {href:'#',target:'',tittle:'管理人员后台登陆，用于添加数据',text:'后台登陆'}
+                {href:'#',target:'',tittle:'SMS',text:'短信自助充值服务',type:'btn'},
+                {href:'http://www.microcloud.asia',target:'_blank',tittle:'休闲乐微云程序',text:'微信-微云',type:'link'},
+                {href:'#s10',target:'',tittle:'软件供应客户',text:'企业客户',type:'link'},
+                {href:'#s15',target:'',tittle:'展示最新消息',text:'最新公告',type:'link'},
+                {href:'#',target:'',tittle:'管理人员后台登陆，用于添加数据',text:'后台登陆',type:'btn'}
 			],
 			ht:'后台登陆',
 			user:'',
-			passwd:''
+			passwd:'',
+			sms:{
+				territorylist:[],
+				territoryname:"",
+				storename:"",
+				territory:"",
+				moneytemplate:[],
+				money:0,
+				tel:1,
+				show:{
+					selectpay:true,
+					pic:false,
+					picsrc:""
+						}
+			},
+
+		},
+		computed:{
+			se_storelist:function(){
+				var list = [];
+				var ter = vm.territorys;
+				for(var i=0;i<ter.length;i++){
+					if(ter[i].territory === this.sms.territoryname){
+						list.push(ter[i]);
+					}
+				}
+				return list;
+			},
+			tedsrc:function(){
+				return "img/pay/"+this.sms.show.picsrc+".jpg";
+			}
 		},
 		methods:{
-			login_modal:function(){
+			//sms register
+			SMS_register:function(){
+				if(this.sms.storename === "" || this.sms.tel == 1){
+					alert("argment error");
+				}else{
+					console.log(this.storename+this.tel);
+					$("#SMSindex").modal('hide');
+					$("#SMSpay").modal('show');
+				}				
+			},
+			smsalipay:function(){
+				this.sms.show.selectpay = false;
+				this.sms.show.pic = true;
+				this.sms.show.picsrc = "alipay";
+			},
+			smswxpay:function(){
+				this.sms.show.selectpay = false;
+				this.sms.show.pic = true;
+				this.sms.show.picsrc = "wxpay";
+			},
+			smsrefreshpay:function(){
+				this.sms.show.selectpay = true;
+				this.sms.show.pic = false;
+				this.sms.show.picsrc = "";
+			},
+			SMS_pay:function(){
+				$.ajax({
+					url:'/get',
+					type:'GET',
+					data:{
+							sid:"pay-success",
+							store:this.sms.storename,
+							tel:this.sms.tel,
+							payment:this.sms.show.picsrc
+						},
+						success:function(data){
+							console.log(data);
+							if(data.error === 1){
+								console.info(this.storename+"提交成功；");
+								alert("已成功发送请求，请耐心等待！！！");
+								$("#pay").modal("hide");
+							}else{
+								alert("提交失败，请联系技术支持人员（15337364316）");
+							}
+							
+						}
+				});
+			},
+			//检测事件唤醒的键
+			check_event:function(e){
+				var innertext = e.target.innerText;
+				switch(innertext){
+					case '短信自助充值服务':
+						this.SMS_modal();
+					break;
+
+					case '后台登陆':
+						this.login_modal();
+					break;
+				}
+			},
+			SMS_modal:function(){
+				$("#SMSindex").modal('show');
+				this.sms.territorylist = vm.terri_list;
+				$.ajax({
+					url:'/get',
+					type:'GET',
+					data:{sid:"money"},
+					success:function(data){
+						vm2.sms.moneytemplate = data;
+					}
+				});
+			},
+			login_modal:function(e){
 				//登陆唤起modal				
 					$.ajax({
 						type:"POST",

@@ -16,16 +16,6 @@ Vue.component('app-header',{
 
 //nav
 Vue.component('app-nav',{
-    props:{'links':{
-                type:Object,
-                default:function(){
-                    return ['no data'];
-                }
-            },
-            'ht':{
-                type:String,
-                default:''
-            }},
     template:'<nav class="navbar navbar-default navbar-inverse" role="navigation" style="border-radius: 0">\
                 <div class="navbar-header">\
                      <button class="navbar-toggle" data-toggle="collapse" data-target="#nav1" type="button">\
@@ -39,18 +29,10 @@ Vue.component('app-nav',{
                 </div>\
                 <div class="collapse navbar-collapse pull-right" id="nav1">\
                     <ul class="nav navbar-nav">\
-                        <li v-for="i in links" v-if="i.text !== ht"><a :href="i.href" class="fontfff tip" :target="i.target" :title="i.tittle">{{i.text}}</a></li>\
-                        <li v-else><a :href="i.href" class="fontfff tip" :target="i.target" :title="i.tittle" @click="iemitl">{{i.text}}</a></li>\
+                        <slot></slot>\
                     </ul>\
                 </div>\
             </nav>',
-    methods:{
-        iemitl:function(){
-            this.$emit('emit-login');
-            console.info("emit-login");
-            return;
-        }
-    }
 });
 //body
 //modal

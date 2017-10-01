@@ -23,35 +23,65 @@
 		   <!-- header -->
 		   <app-header></app-header>
 		   <!-- nav -->
-			<app-nav v-on:emit-login="login_modal" v-bind:links="links" v-bind:ht="ht"></app-nav>
-       
-       <!-- login -->
-       <div role="dialog" class="modal fade" tabindex="-1" aria-hidden="true" id="loginin" data-backdrop="static">
-       		<div class="modal-dialog">
-       			<div class="modal-content">
-       				<div class="modal-header">
-       					<button class="close" data-dismiss="modal" >&times;</button>
-       					<h4>登陆</h4>
-       				</div>
-       				<div class="modal-body">
-       					<form role="form">
-       						<div class="form-group">
-       							<label for="user">user:{{user}}</label>
-       							<input id="user" class="form-control" type="text" value="001" v-model="user">
-       						</div>
-       						<div class="form-group">
-       							<label for="pass">passwd:</label>
-       							<input id="pass" class="form-control" type="password" v-model="passwd">
-       						</div>
-       					</form>
-       				</div>
-       				<div class="modal-footer">
-       					<button class="btn btn-default" type="button" data-dismiss="modal">close</button>
-       					<button class="btn btn-default btn-success" @click="login_check">验证</button>
-       				</div>
-       			</div>
-       		</div>
-        </div>
+			<app-nav>
+				<li v-for="i in links" v-if="i.type === 'link'"><a :href="i.href" class="fontfff tip" :target="i.target" :title="i.tittle">{{i.text}}</a></li>
+				<li v-else><a :href="i.href" class="fontfff tip" :title="i.tittle" @click="check_event">{{i.text}}</a></li>
+			</app-nav>
+			<!-- login modal -->
+			<app-modal :ids="'loginin'" :title="'登录'" :btntext="'login'" @modal="login_check">
+					<form role="form"> 
+							<div class="form-group">
+								<label for="user">user:{{user}}</label>
+								<input id="user" class="form-control" type="text" value="001" v-model="user">
+							</div>
+							<div class="form-group">
+								<label for="pass">passwd:</label>
+								<input id="pass" class="form-control" type="password" v-model="passwd">
+							</div>
+						</form>
+			</app-modal>  
+			
+			<!-- SMS modal  -->
+			<app-modal :ids="'SMSindex'" :title="'SMS Register'" :btntext="'确认提交'" @modal="SMS_register">
+					<form class="form-group" name="sms">				
+							<label for="select-territory">选择地域:{{sms.territoryname}}</label>
+							<select id="select-territory" name="select-territory" class="form-control" v-model="sms.territoryname">
+								<option v-for="i in sms.territorylist" v-bind:value="i">{{i}}</option>
+							</select>
+							
+							<label for="select-store">选择门店：{{sms.storename}}</label>
+							<select id="select-store" name="select-store" class="form-control" autofocus v-model="sms.storename">
+								<option v-for="i in se_storelist" v-bind:value="i.client_name">{{i.client_name}}</option>
+							</select>
+							
+							<label for="tel">联系电话：{{sms.tel}}</label>
+							<input type="tel" class="form-control" id="tel" name="tel" required maxlength="12" v-model="sms.tel">
+							
+							<label for="money">充值金额：{{sms.money}}</label>
+							<select id="money" name="money" class="form-control" v-model="sms.money">
+								<option v-for="i in sms.moneytemplate" v-bind:value="i.money">{{i.template}}</option>
+							</select>
+							
+						</form>
+			</app-modal>
+
+			<app-modal :ids="'SMSpay'" :title="'SMSpay'" :btntext="'确认充值'" @modal="SMS_pay">
+					<div v-if="sms.show.selectpay" class="row">					
+							<label>门店为:{{sms.storename}},提醒信息发送到：{{sms.tel}},充值金额为：{{sms.money}}，处理时间为周一至周五。</label>
+							<div class="col-md-12 col-xs-12" style="margin: 1em 3em">
+								<div class="col-md-6 col-xs-6 center-block">
+									<button class="btn btn-default btn-danger" v-on:click="smsalipay">支付宝付款</button>
+								</div>
+								<div class="col-md-6 col-xs-6 center-block">
+									<button class="btn btn-default btn-danger" v-on:click="smswxpay">微信付款</button>
+								</div>
+							</div>
+					</div>
+					<div v-if="sms.show.pic">
+						<img v-bind:src="tedsrc" v-on:click="smsrefreshpay" style="max-width: 80%;margin: 2em">
+					</div>
+			</app-modal>
+        
 		</div>
        <!-- main  -->
        <main class="container-fluid" id="vm">
