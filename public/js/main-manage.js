@@ -1,5 +1,5 @@
 // JavaScript Document
-$(document).ready(function(){
+
 	"use strict";
 	$(".tip").tooltip();
 	//modal wait
@@ -596,6 +596,4 @@ $(document).ready(function(){
 		mounted:function(){
 			this.get_sms_log();
 		}
-	})
-
-});
+	});

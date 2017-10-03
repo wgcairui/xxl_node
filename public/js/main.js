@@ -1,4 +1,3 @@
-$(document).ready(function(){
 	"use strict";
 	$.getScript('js/wait.js');
 	$.ajaxSetup({
@@ -293,4 +292,3 @@ Vue.component('app-moreinfo',{
 			}
 		}
 	});	
-});
