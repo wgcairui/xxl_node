@@ -55,6 +55,7 @@
 			//显示更多元素
 			show_link:function(idname){
 				$("#"+idname).find('li').show();
+				
 			},
 			territory_find:function(im){
 				var list = [];

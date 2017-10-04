@@ -152,9 +152,7 @@
 						regdate:this.reg_date
 					},
 					success:function(data){
-						console.log(data);
-						for(var i in data) console.log(i);
-						manage1.key = data;
+						manage1.key = data.Body;
 					}
 				})
 			},

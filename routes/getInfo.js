@@ -4,6 +4,7 @@ var route = express.Router();
 var Format = require('../lib/Format');
 var my = require('../lib/mysqlContent');
 var ms = require('../lib/mssqlContent');
+var msgxsend = require('../lib/submail/messageXSend');
 var os = require('os');
 var fs = require('fs');
 
@@ -112,6 +113,7 @@ route.get('/',function(req,res){
         break;
 
         case 'money':
+        console.log('mmmmm');
             var money = function(){
                 my.query("SELECT template,money FROM `rechargetemplate`",function(result){
                     res.json(result);
@@ -122,7 +124,10 @@ route.get('/',function(req,res){
         case 'pay-success':
             var paySuccess = function(){
                 var $pay = '';
-                var payment = query.payment;
+                var payment = query.payment,
+                    tel = query.tel,
+                    store = query.store;
+                //if(tel.length < 10) return Format.FormatStatus('0','电话号码位数错误');
                 switch(payment){
                     case "alipay":
 					    $pay = "支付宝支付";
@@ -134,6 +139,22 @@ route.get('/',function(req,res){
 					    $pay = "undefault";
 					    break;
                 }
+            var msg = new msgxsend();
+            console.log('msg');
+            sendto(msg,{store:store,payment:payment,tel:tel},'ALEJG3',res);
+            my.query("SELECT store,tel,payment FROM `sms_pay` WHERE stat = 0",function(result){
+                sendto(msg,{store:store,payment:payment,num:result.length,tel:'15337364316'},'xS5hJ4');
+            });       
+            
+            function sendto(msg,val,project,resopon){
+                msg.add_to(tel);
+                msg.set_project(project);
+                for(var i in val){
+                    msg.add_var(i,val[i]);
+                }
+                 msg.xsend(val,project,resopon);                
+            }
+                
             }();
         break;
 
