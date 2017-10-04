@@ -15,25 +15,10 @@
 		//console.log(data);
 	});	
 //el:vm
-//app showmore
-Vue.component('app-moreinfo',{
-    props:['message'],
-    template:'<a class="btn btn-default btn-link btn-block center-block" v-on:click="iemit">{{message}}<span class="glyphicon glyphicon-arrow-down"></span></a>',
-    methods:{
-        iemit:function(){
-            this.$emit('inemit');
-        }
-    }        
-    }
-);
-
-
 	var vm = new Vue({
 		el:'#vm',
 		data:{
 			update_time:'2017-07-21',
-			loadtittle:'软件下载',
-			linktittle:'工具链接下载',
 			localdowns:[],
 			linkdowns:[],
 			territorys:[],
@@ -68,10 +53,8 @@ Vue.component('app-moreinfo',{
 		//vm方法
 		methods:{
 			//显示更多元素
-			show_link:function(){
-				var show = $(".btn-link");
-				show.prev().children().show();
-				show.addClass("hidden");
+			show_link:function(idname){
+				$("#"+idname).find('li').show();
 			},
 			territory_find:function(im){
 				var list = [];
@@ -291,4 +274,9 @@ Vue.component('app-moreinfo',{
 				});
 			}
 		}
-	});	
+	});
+	
+	//el footer
+	var footer = new Vue({
+		el:'#footer'
+	});

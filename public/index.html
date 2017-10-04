@@ -23,7 +23,7 @@
 		   <!-- header -->
 		   <app-header></app-header>
 		   <!-- nav -->
-			<app-nav>
+			<app-nav :title="'Home'">
 				<li v-for="i in links" v-if="i.type === 'link'"><a :href="i.href" class="fontfff tip" :target="i.target" :title="i.tittle">{{i.text}}</a></li>
 				<li v-else><a :href="i.href" class="fontfff tip" :title="i.tittle" @click="check_event">{{i.text}}</a></li>
 			</app-nav>
@@ -88,66 +88,46 @@
        		<div class="row">
        		<!-- md9 -->
        			<div class="col-md-9 col-xs-12">
-       			
-       				<section class="block" id="s1">
-       					<div class="block-tittle">
-       						<h4>{{loadtittle}}</h4>
-       					</div>
-       					<article>
-       					<p class="block-p">以下链接为休闲乐软件本地下载链接，exe文件为最新版本软件，zip为压缩文件（下载之后请自行解压缩）。</p>
-       					
-       					<ul class="block-cont list-group" id="xxl-down">
-							   <li class="list-group-item" v-show = "id < 10"  v-for="(item,id) in localdowns">
-								   <a v-bind:href="itemadress+item">{{item}}
-									<span class="badge pull-right">
-										<span class="glyphicon glyphicon-folder-open">
-										</span>
-									</span>
+
+					<app-block :title="'软件下载'" :explain="'以下链接为休闲乐软件本地下载链接，exe文件为最新版本软件，zip为压缩文件（下载之后请自行解压缩)'">
+						<div slot="body">
+							<ul class="block-cont list-group" id="filelink">
+								<li class="list-group-item"  v-for="(item,id) in localdowns"  v-show = "id < 10" :name="id">
+									<a v-bind:href="itemadress+item">{{item}}
+										<span class="badge pull-right"><span class="glyphicon glyphicon-folder-open"></span></span>
 									</a>
 								</li>
-       					</ul>
-       					<app-moreinfo v-bind:message="moreinfo" v-on:inemit="show_link"></app-moreinfo>
-       					</article>
-       					<footer class="block-footer">
-       						<span class="glyphicon glyphicon-cloud-download center-block"></span>
+							</ul>
+							<a class="btn btn-default btn-link btn-block center-block" @click="show_link('filelink')">show more<span class="glyphicon glyphicon-arrow-down"></span></a>
+						</div>
+						<div slot="footer">
+							<span class="glyphicon glyphicon-cloud-download center-block"></span>
        						<address class="pull-right text-info">更新时间为:<time>{{update_time}}</time></address>
-       					</footer>
-       				</section>
-       				
-       				<section class="block" id="s2">
-       					<header class="block-tittle">
-       						<h4>{{linktittle}}</h4>
-       					</header>
-       					<article>
-       						<p class="block-p">以下链接为休闲乐软件工具下载链接，其中大部分链接为百度云链接（需要百度云账户或百度云客户端下载），zip为压缩文件（下载之后请自行解压缩）。</p>
-       						<div class="block-cont">
-       							<ul class="list-group">
-										<li class="list-group-item" v-show = "id < 10"  v-for='(i,id) in linkdowns'>
-											<a class="tip" target="_blank" v-bind:href="i.adress" :tittle="i.title">
-												{{i.name}}
+						</div>
+					</app-block>
+
+					<app-block :title="'工具链接下载'" :explain="'以下链接为休闲乐软件工具下载链接，其中大部分链接为百度云链接（需要百度云账户或百度云客户端下载），zip为压缩文件（下载之后请自行解压缩)'">
+						<div slot="body">
+							<ul class="list-group" id="toollink">
+									<li class="list-group-item" v-show = "id < 10"  v-for='(i,id) in linkdowns'>
+										<a class="tip" target="_blank" v-bind:href="i.adress" :tittle="i.title">{{i.name}}
 												<span class="badge pull-right">
 													<span class="glyphicon glyphicon-cloud"></span>
 												</span>
 											</a>
-										</li>
-       							</ul>
-       							<app-moreinfo v-bind:message="moreinfo" v-on:inemit="show_link"></app-moreinfo>
-       						</div>
-       					</article>
-       					<footer class="block-footer">
-       						<span class="glyphicon glyphicon-cloud-download center-block"></span>
+									</li>
+							   </ul>
+							   <a class="btn btn-default btn-link btn-block center-block" @click="show_link('toollink')">show more<span class="glyphicon glyphicon-arrow-down"></span></a>
+						</div>
+						<div slot="footer">
+							<span class="glyphicon glyphicon-cloud-download center-block"></span>
        						<address class="pull-right text-info">更新时间为:<time>{{update_time}}</time></address>
-       					</footer>
-       				</section>
-       				<!--  client -->
-       				<section class="block" id="s10">
-       					<header class="block-tittle">
-       						<h4>我们的客户</h4>
-       					</header>
-       					<article>
-       						<p class="block-p">休闲乐软件（江苏）服务于江苏，上海区域足疗，养生，洗浴，美容，餐饮等服务业行业软件。</p>
-       						<div class="block-cont">
-       							<div class="panel-group" id="panels">
+						</div>
+					</app-block>
+					   
+					<app-block :title="'我们的客户'" :explain="'休闲乐软件（江苏）服务于江苏，上海区域足疗，养生，洗浴，美容，餐饮等服务业行业软件'">
+						<div slot="body">
+							<div class="panel-group" id="panels">
        								<div class="panel panel-default" v-for="(i,id) in terri_list">
        									<div class="panel-heading">
        										<a class="panel-title" data-toggle="collapse" :href="f+a+id" data-parent="#panels">{{i}}</a>
@@ -159,31 +139,28 @@
        									</div>
        								</div>
        								
-       							</div>
        						</div>
-       					</article>
-       					<footer class="block-footer">
-       						<span class="glyphicon glyphicon-flag center-block"></span>
+						</div>
+						<div slot="footer">
+							<span class="glyphicon glyphicon-flag center-block"></span>
        						<address class="pull-right text-info">更新时间为:<time>{{update_time}}</time></address>
-       					</footer>
-       				</section>
-       				<!--  news  -->
-       				<section class="block" id="s15">
-       					<header class="block-tittle">
-       						<h4>公告！！！</h4>
-       					</header>
-       					<article>
-       						<ul class="block-cont">
+						</div>
+					</app-block>
+       				
+					   <!--  news  -->
+					<app-block :title="'公告'">
+						<div slot="body">
+							<ul class="block-cont">
        							<li>
        								<p class="block-p"></p>
        							</li>
        						</ul>
-       					</article>
-       					<footer class="block-footer">
-       						<span class="glyphicon glyphicon-comment center-block"></span>
+						</div>
+						<div slot="footer">
+							<span class="glyphicon glyphicon-comment center-block"></span>
        						<address class="pull-right text-info">更新时间为:<time>2017-06-01</time></address>
-       					</footer>
-       				</section>
+						</div>
+					</app-block>
        				
        			</div>
        			<!-- col-3 -->
@@ -200,33 +177,9 @@
        		</div>
        </main>
        <!-- footer -->
-       <footer class="footer">
-       		<div class="container">
-       			<section class="col-md-4">
-       				<header class="footer-head">
-       					<h4 class="footer-tittle">最新动态</h4>
-       				</header>
-       				<ul>
-       					<li><a href="#" class="footer-show">news</a></li>
-       				</ul>
-       			</section>
-       			<section class="col-md-4">
-       				<header class="footer-head">
-       					<h4 class="footer-tittle">新客户</h4>
-       				</header>
-       			</section>
-       			<section class="col-md-4">
-       				<header class="footer-head">
-       					<h4 class="footer-tittle">联系咨询</h4>
-       				</header>
-       				<ul>
-       					<li><p><span class="glyphicon glyphicon-phone"></span> 杨先生：13972689305</p></li>
-       					<li><p><span class="glyphicon glyphicon-phone"></span> 邓先生：18118439727（技术支持）</p></li>
-       				</ul>
-       			</section>
-       		</div>
-       </footer>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
+       <div id="footer">
+		   <app-footer></app-footer>
+	   </div>
         <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>     

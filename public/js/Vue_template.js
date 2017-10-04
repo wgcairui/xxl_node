@@ -14,8 +14,43 @@ Vue.component('app-header',{
                 </a></div></header>'
 });
 
+//footer
+Vue.component('app-footer',{
+    template:'<footer class="footer">\
+                <div class="container">\
+                    <section class="col-md-4">\
+                        <header class="footer-head">\
+                            <h4 class="footer-tittle">最新动态</h4>\
+                        </header>\
+                        <ul>\
+                            <li><a href="#" class="footer-show">news</a></li>\
+                        </ul>\
+                    </section>\
+                    <section class="col-md-4">\
+                        <header class="footer-head">\
+                            <h4 class="footer-tittle">新客户</h4>\
+                        </header>\
+                    </section>\
+                    <section class="col-md-4">\
+                        <header class="footer-head">\
+                            <h4 class="footer-tittle">联系咨询</h4>\
+                        </header>\
+                        <ul>\
+                            <li><p><span class="glyphicon glyphicon-phone"></span> 杨先生：13972689305</p></li>\
+                            <li><p><span class="glyphicon glyphicon-phone"></span> 邓先生：18118439727（技术支持）</p></li>\
+                        </ul>\
+                    </section>\
+                </div>\
+            </footer>',
+});
 //nav
 Vue.component('app-nav',{
+    props:{
+        'title':{
+            type:String,
+            default:'Title'
+        }
+    },
     template:'<nav class="navbar navbar-default navbar-inverse" role="navigation" style="border-radius: 0">\
                 <div class="navbar-header">\
                      <button class="navbar-toggle" data-toggle="collapse" data-target="#nav1" type="button">\
@@ -25,7 +60,7 @@ Vue.component('app-nav',{
                         <span class="icon-bar"></span>\
                         <span class="icon-bar"></span>\
                     </button>\
-                    <a href="#" class="navbar-brand" >休闲乐软件</a>\
+                    <a href="#" class="navbar-brand" >{{title}}</a>\
                 </div>\
                 <div class="collapse navbar-collapse pull-right" id="nav1">\
                     <ul class="nav navbar-nav">\
@@ -75,5 +110,30 @@ Vue.component('app-modal',{
         }
     }
 });
+
+//block 创建块组件
+Vue.component('app-block',{
+    template:'<section class="block" id="s1">\
+                <div class="block-tittle"><h4>{{title}}</h4></div>\
+                <article class="block-cont">\
+                    <p class="block-p">{{explain}}</p>\
+                    <slot name="body">body</slot>\
+                </article>\
+                <footer class="block-footer">\
+                    <slot name="footer"></slot>\
+                </footer>\
+            </section>',
+    props:{
+        'title':{
+            type:String,
+            default:'block title'
+        },
+        'explain':{
+            type:String,
+            default:''
+        }
+
+    }
+})
 
 

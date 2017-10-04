@@ -32,6 +32,8 @@
 				switch(innertext){
 					case 'SMS log':
 						if(sms.smslist.length > 1) sms.get_sms_log();
+						sms.show = true;
+						return;
 					break;
 
 					case 'Exit Login':
@@ -558,6 +560,7 @@
 		el:'#smslog',
 		data:{
 			smslist:[],
+			show:false
 		},
 		computed:{
 			listnum:function(){
@@ -596,4 +599,9 @@
 		mounted:function(){
 			this.get_sms_log();
 		}
+	});
+
+	//el footer
+	var footer = new Vue({
+		el:'#footer'
 	});

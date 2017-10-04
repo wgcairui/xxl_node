@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>后台</title>
+        <title>休闲乐软件-后台</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" href="ico/favicon.ico">
@@ -16,10 +16,10 @@
 		<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
 		<script src="js/Vue_template.js"></script>
     </head>
-    <body>
+    <body  style="background-color: #ebebeb">
     <header id="head">
 		<app-header></app-header>
-		<app-nav>		
+		<app-nav :title="'Manage'">		
 			<li v-for="i in links" v-if="i.type === 'link'"><a :href="i.href" class="fontfff tip" :target="i.target" :title="i.tittle">{{i.text}}</a></li>
 			<li v-else><a :href="i.href" class="fontfff tip" :title="i.tittle" @click="check_event">{{i.text}}</a></li>
 		</app-nav>		
@@ -38,11 +38,10 @@
 					</select>
 				</form>
 			</app-modal>
-
-    		<section class=" col-md-12">
-    			<span class="label label-default">查询客户信息</span>
-    			<article class="jumbotron">
-    				<form class="form-inline">
+			<!-- 查询客户信息  -->
+			<app-block :title="'查询客户信息'">
+				<div slot="body">
+					<form class="form-inline">
 						<div class="form-group">
 							<label for="se-territory">模糊搜索:{{keyword}}</label>
 							<input type="text" class="form-control" id="se-territory" v-model="keyword">
@@ -62,161 +61,157 @@
 							<tr v-if="item !== 'id'" v-for="(i,item) in storeinfo"><td>{{item}}</td><td @click="modify_value">{{i}}</td></tr>
     				</table>
     				<hr/>
-    				<div class="btn-group pull-right">
-					<a class="btn btn-default" href="#add-store">添加新门店</a>
-					<button class="btn btn-default" id="delete-store">delete-store</button>
-					</div>
-				</article>    			
-    		</section>
-    		
-			<div class="clearfix"></div>		
-    		<section class=" col-md-12">
-    			<span class="label label-default">注册软件锁</span>
-    			<article class="jumbotron">
-    				<form class="form-group">
-					<label class="control-label">软件锁序列号：{{reg_key}}</label>
-					<input class="form-control" type="text" v-model="reg_key" required>
-					<label class="control-label">注册至：{{getdate}}</label>
-					<input class="form-control" type="text" v-model="reg_date">
-					<label class="label label-default">{{key}}</label>
-				</form>
-				<button class="btn btn-default btn-block btn-primary" @click="reg_xxl">提交</button>				
-				</article>    			
-			</section>
+				</div>
+
+				<div slot="footer" class="btn-group pull-right">
+						<a class="btn btn-default" href="#add-store">添加新门店</a>
+						<button class="btn btn-default" id="delete-store">delete-store</button>
+						</div>
+			</app-block>
+
+			<!-- 注册软件锁  -->
+			<app-block :title="'注册软件锁'">
+				<div slot="body">
+					<form class="form-group">
+						<label class="control-label">软件锁序列号：{{reg_key}}</label>
+						<input class="form-control" type="text" v-model="reg_key" required>
+						<label class="control-label">注册至：{{getdate}}</label>
+						<input class="form-control" type="text" v-model="reg_date">
+						<label class="label label-default">{{key}}</label>
+					</form>
+					<button class="btn btn-default btn-block btn-primary" @click="reg_xxl">提交</button>
+				</div>
+			</app-block>
+		
+			<!-- 添加门店  -->
+			<app-block :title="'添加门店'">
+				<div slot="body">
+						<button class="btn btn-default btn-success btn-block collapsed" id="addstore"  data-toggle="collapse" data-target="#input-store-info">添加门店<span class="caret"></span></button>
+						<div class="collapse" id="input-store-info">
+							<form class="form-group" name="storeinfo" id="storeinfo">
+								<label for="client_name">名称:</label>
+								<input type="text" id="client_name" name="client_name" class="form-control">
+								<label for="territory">地域:</label>
+								<select class="form-control" name="territory">
+										<option v-for="i in territorys" :value="i" >{{i}}</option>
+								</select>
+								<label for="server_name">服务器：</label>
+								<input type="text" class="form-control" value="server" id="server_name" name="server_name">
+								<label for="server_pw">服务器密码:</label>
+								<input type="text" id="server_pw" name="server_pw" class="form-control">
+								<label for="Sql_version">数据库版本:</label>
+								<select id="Sql_version" name="Sql_version" class="form-control">
+									<option v-for="i in sqlversion" :value="i">{{i}}</option>
+								</select>
+								<label for="sa_user">数据库用户：</label>
+								<input type="text" class="form-control" id="sa_user" name="sa_user" value="sa">
+								<label for="sa_pw">数据库密码：</label>
+								<input type="text" id="sa_pw" name="sa_pw" class="form-control">
+								<label for="server_ip">IP:</label>
+								<input type="text" id="server_ip" name="server_ip" class="form-control" value="192.168.">
+								<label for="tel_name">联系人：</label>
+								<input type="text" id="tel_name" name="tel_name" class="form-control">
+								<label for="tel	">联系电话:</label>
+								<input type="tel" id="tel" name="tel" class="form-control">
+								<label for="wifi_pw">wifi:</label>
+								<input type="text" id="wifi_pw" name="wifi_pw" class="form-control">
+								<label for="rout_user">路由账户：</label>
+								<input type="text" id="rout_user" name="rout_user" class="form-control" value="admin">
+								<label for="rout_pw">路由密码：</label>
+								<input type="text" id="rout_pw" name="rout_pw" class="form-control">
+								<label for="microcloudID">微云ID:</label>
+								<input class="form-control" type="text" id="microcloudID" name="microcloudID">
+								<label for="meg_id">msid:</label>
+								<input type="number" id="meg_id" name="meg_id" class="form-control">
+								<label for="meg_name">msname:</label>
+								<input type="text" id="meg_name" name="meg_name" class="form-control">
+								<label for="meg_pw">ms-passwd:</label>
+								<input type="text" id="meg_pw" name="meg_pw" class="form-control">
+								<label for="meg_yz">ms-验证码:</label>
+								<input type="number" id="meg_yz" name="meg_yz" class="form-control" value="1212">
+								<label for="net_domain">域名:</label>
+								<input type="text" id="net_domain" name="net_domain" class="form-control">
+								<label for="net_name">域名user:</label>
+								<input type="text" id="net_name" name="net_name" class="form-control">
+								<label for="net_pw">域名passwd:</label>
+								<input type="text" id="net_pw" name="net_pw" class="form-control">
+								<label for="remark">备注:</label>
+								<input type="text" id="remark" name="remark" class="form-control">
+								
+							</form>
+							<button type="button" class="btn btn-default btn-success btn-block" @click="add_store_update">sumbit</button>
+						</div>
+				</div>
+			</app-block>
+
+			<!-- 添加云链接  -->
+			<app-block :title="'添加云链接'">
+				<div slot="body">
+					<form class="form-group">
+						<label class="control-label" for="d-ipname">链接名称：{{link_name}}</label>
+						<input class="form-control" type="text" id="d-ipname" v-model="link_name" required>
+						<label class="control-label" for="d-ipad">链接地址：{{link_srccm}}</label>
+						<input class="form-control" type="text" id="d-ipadress" v-model="link_src">
+					</form>
+					<button class="btn btn-default btn-block btn-primary" @click="add_link">提交</button>	
+				</div>
+			</app-block>
 			
-    		
-    		<section class=" col-md-12" id="add-store">
-    			<span class="label label-default">add-store</span>
-    			<article class="jumbotron">
-    				<button class="btn btn-default btn-success btn-block collapsed" id="addstore"  data-toggle="collapse" data-target="#input-store-info">添加门店<span class="caret"></span></button>
-    				<div class="collapse" id="input-store-info">
-    					<form class="form-group" name="storeinfo" id="storeinfo">
-    						<label for="client_name">名称:</label>
-    						<input type="text" id="client_name" name="client_name" class="form-control">
-    						<label for="territory">地域:</label>
-    						<select class="form-control" name="territory">
-									<option v-for="i in territorys" :value="i" >{{i}}</option>
-    						</select>
-    						<label for="server_name">服务器：</label>
-    						<input type="text" class="form-control" value="server" id="server_name" name="server_name">
-    						<label for="server_pw">服务器密码:</label>
-    						<input type="text" id="server_pw" name="server_pw" class="form-control">
-    						<label for="Sql_version">数据库版本:</label>
-    						<select id="Sql_version" name="Sql_version" class="form-control">
-    							<option v-for="i in sqlversion" :value="i">{{i}}</option>
-    						</select>
-    						<label for="sa_user">数据库用户：</label>
-    						<input type="text" class="form-control" id="sa_user" name="sa_user" value="sa">
-    						<label for="sa_pw">数据库密码：</label>
-    						<input type="text" id="sa_pw" name="sa_pw" class="form-control">
-    						<label for="server_ip">IP:</label>
-    						<input type="text" id="server_ip" name="server_ip" class="form-control" value="192.168.">
-    						<label for="tel_name">联系人：</label>
-    						<input type="text" id="tel_name" name="tel_name" class="form-control">
-    						<label for="tel	">联系电话:</label>
-    						<input type="tel" id="tel" name="tel" class="form-control">
-    						<label for="wifi_pw">wifi:</label>
-    						<input type="text" id="wifi_pw" name="wifi_pw" class="form-control">
-    						<label for="rout_user">路由账户：</label>
-    						<input type="text" id="rout_user" name="rout_user" class="form-control" value="admin">
-    						<label for="rout_pw">路由密码：</label>
-    						<input type="text" id="rout_pw" name="rout_pw" class="form-control">
-    						<label for="microcloudID">微云ID:</label>
-    						<input class="form-control" type="text" id="microcloudID" name="microcloudID">
-    						<label for="meg_id">msid:</label>
-    						<input type="number" id="meg_id" name="meg_id" class="form-control">
-    						<label for="meg_name">msname:</label>
-    						<input type="text" id="meg_name" name="meg_name" class="form-control">
-    						<label for="meg_pw">ms-passwd:</label>
-    						<input type="text" id="meg_pw" name="meg_pw" class="form-control">
-    						<label for="meg_yz">ms-验证码:</label>
-    						<input type="number" id="meg_yz" name="meg_yz" class="form-control" value="1212">
-    						<label for="net_domain">域名:</label>
-    						<input type="text" id="net_domain" name="net_domain" class="form-control">
-    						<label for="net_name">域名user:</label>
-    						<input type="text" id="net_name" name="net_name" class="form-control">
-    						<label for="net_pw">域名passwd:</label>
-    						<input type="text" id="net_pw" name="net_pw" class="form-control">
-    						<label for="remark">备注:</label>
-    						<input type="text" id="remark" name="remark" class="form-control">
-    						
-    					</form>
-    					<button type="button" class="btn btn-default btn-success btn-block" @click="add_store_update">sumbit</button>
-    				</div>
-				</article>    			
-    		</section>
-    		     <div class="clearfix"></div>		
-    		<section class=" col-md-6">
-    			<span class="label label-default">添加云链接</span>
-    			<article class="jumbotron">
-    				<form class="form-group">
-					<label class="control-label" for="d-ipname">链接名称：{{link_name}}</label>
-					<input class="form-control" type="text" id="d-ipname" v-model="link_name" required>
-					<label class="control-label" for="d-ipad">链接地址：{{link_srccm}}</label>
-					<input class="form-control" type="text" id="d-ipadress" v-model="link_src">
-				</form>
-				<button class="btn btn-default btn-block btn-primary" @click="add_link">提交</button>				
-				</article>    			
-    		</section>
-    		
-    		<section class="col-md-6">
-    			<span class="label label-default">添加本地链接</span>
-    			<article class="jumbotron">
-    				<form class="form-group" action="php/main-manage-upload.php" enctype="multipart/form-data" name="f1" method="post" target="_blank">
+			<!-- 添加本地链接  -->
+			<app-block :title="'添加本地链接'">
+				<div slot="body">
+					<form class="form-group" action="php/main-manage-upload.php" enctype="multipart/form-data" name="f1" method="post" target="_blank">
 						<label class="control-label" for="filename">文件描述：</label>
 						<input class="form-control" type="text" id="filename" >
 						<label class="control-label" for="fileadress">上传文件：</label>
 						<input  type="file" id="fileadress[]" name="fileadress[]" class="form-control" multiple>
 						<button type="submit" class="btn btn-default btn-block btn-primary" id="file" style="margin-top: .5em">提交</button>
 					</form>
-					
-				</article>    			
-    		</section>
+				</div>
+			</app-block>
 			
-    		
-    		<section class="col-md-12">
-    			<span class="label label-default">查询日志</span>
-    			<article class="jumbotron">    				
-    				<input type="number" :value="log_num" v-model="log_num">
+			<!-- 查询日志  -->
+			<app-block :title="'查询日志'">
+				<div slot="body">
+					<input type="number" :value="log_num" v-model="log_num">
 					<button class="btn btn-default  btn-primary" @click="get_log">查询</button>
 					<button class="btn btn-default" @click="del_log">清空</button>
 					<h4>log</h4>
     				<table class="table" id="loginfo">
 						<tr v-for="item in logs"><th>{{item.id}}</th><td>{{item.incident}}</td><td>{{item.operate}}</td><td>{{item.tims}}</td></tr>
     				</table>
-				</article>    			
-    		</section>   		
+				</div>
+			</app-block>		
 		</div>
 	</div>
 
 	<!-- argument////////////////////////////////////////////////////////////////// -->
 	<div id="manage2" >
     		<section class="container-fluid">
-  				<!--   选择页面      -->
-  				<span class="label label-default">Select Store</span>
-    			<div class="row jumbotron">
-    				<div class="col-md-12">
-    					<form class="form-group">
-    						<label for="select-name" class="label label-default">选择门店:(以下门店都是有域名和sa密码，手机查看请开横屏)</label>
-    						<select class="form-control focus" multiple v-model="storeid">
-								<option v-for="item in clients" :value="item.id">{{item.client_name}}</option>
-    						</select>
-    					</form>
-    					
-    				</div>
-    				<div class="col-md-12">
-						<label class="label label-default">已选择以下门店</label>
-						<hr/>
-						<ul class="list-group">
-							<li  v-for="i in storenames" class="list-group-item">{{i.name}}<span class="badge pull-right"><span></span>{{i.status}}</span></li>
-						</ul>
-						<button class="btn btn-default btn-block" @click="get_batch_info">获取数据</button>
-    				</div>
-    			</div>
-    			<!--   参数展示页面          -->
-    			<span class="label label-default">Argument</span>
-    			<div class="row jumbotron">
-    				<div class="col-md-12" style="padding: 2em 0">
+				  <!--   选择页面      -->
+				  <app-block :title="'Select Store'">
+					  <div slot="body">
+							<div>
+								<form class="form-group">
+									<label for="select-name" class="label label-default">选择门店:(以下门店都是有域名和sa密码，手机查看请开横屏)</label>
+									<select class="form-control focus" multiple v-model="storeid">
+										<option v-for="item in clients" :value="item.id">{{item.client_name}}</option>
+									</select>
+								</form>									
+								<label class="label label-default">已选择以下门店</label>
+								<hr/>
+								<ul class="list-group">
+									<li  v-for="i in storenames" class="list-group-item">{{i.name}}<span class="badge pull-right"><span></span>{{i.status}}</span></li>
+								</ul>
+								<button class="btn btn-default btn-block" @click="get_batch_info">获取数据</button>
+							</div>
+					  </div>
+				  </app-block>
+
+				<!--   参数展示页面          -->
+				<app-block :title="'Argument'">
+					<div slot="body" class="row">
+						<div class="col-md-12" style="padding: 2em 0">
     					<div class="col-md-6">
     						<label class="label label-default" for="seach-main">类别查找：</label>
     						<form class="form-group">    							
@@ -233,22 +228,22 @@
     						</form>
     						<button type="button" class="btn btn-default btn-block" id="seach-itemin">search</button>
     					</div>
-    				</div>
-    				<div class="col-md-12">
-    					<table class="table table-bordered">
-    						<thead>
-    							<tr id="argument-thead">
-    								<th>main</th><th>Sub(点击修改)</th><th v-for="i in namelist">{{i}}</th>
-    							</tr>
-    						</thead>
-    						<tbody id="argument-tbody">
-    							<tr v-for="i in arguments"><td>{{i.main}}</td><td @click="show_modal">{{i.sub}}</td><td v-for="j in i.val">{{j}}</td></tr>
-    						</tbody>
-    					</table>
-    				</div>
-    			</div>
-    		</section>
-    	
+					</div>
+					<div class="col-md-12">
+							<table class="table table-bordered">
+								<thead>
+									<tr id="argument-thead">
+										<th>main</th><th>Sub(点击修改)</th><th v-for="i in namelist">{{i}}</th>
+									</tr>
+								</thead>
+								<tbody id="argument-tbody">
+									<tr v-for="i in arguments"><td>{{i.main}}</td><td @click="show_modal">{{i.sub}}</td><td v-for="j in i.val">{{j}}</td></tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</app-block>
+
 		
     
     	<!-- regrster modal  -->
@@ -280,9 +275,9 @@
 	</div>
 
 	<!-- sms log -->
-	<span class="label label-default">SMS log</span>
-	<div class=" jumbotron" id="smslog">
-		<table class="table table-hover table-bordered">
+	<app-block :title="'SMS log'" id="smslog"  v-show="show">
+		<div slot="body"  >
+			<table class="table table-hover table-bordered">
 			<thead>
 				<tr><th>ID</th><th>客户名</th><th>联系电话</th><th>付款方式</th><th>提交时间</th><th>Check</th></tr>
 			</thead>
@@ -301,6 +296,12 @@
 				<td><th>条目总数为：{{listnum}}</th></td>
 			</tfoot>
 		</table>
+		</div>
+	</app-block>
+	
+	
+	<div id="fooeter">
+		<app-footer></app-footer>
 	</div>
    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
         <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
