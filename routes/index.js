@@ -5,6 +5,7 @@ var router = express.Router();
 var get = require('./getInfo');
 var post = require('./PostInfo');
 var login = require('./login');
+var upload = require('./upload');
 
 // GET home page. 
 router.get('/', function(req, res) {
@@ -21,6 +22,8 @@ router.use('/post',post);
 //分发LoginPost请求
 router.use('/login',login);
 
+//upload
+router.use('/upload',upload);
 
 
 module.exports = router;

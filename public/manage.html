@@ -42,24 +42,25 @@
 			<app-block :title="'查询客户信息'">
 				<div slot="body">
 					<form class="form-inline">
-						<div class="form-group">
-							<label for="se-territory">模糊搜索:{{keyword}}</label>
-							<input type="text" class="form-control" id="se-territory" v-model="keyword">
-						</div>
-						<div class="form-group pull-right">							
+						<div class="form-group">							
 							<label for="select-name">选择门店:{{storename}}</label>						
     						<select class="form-control" id="select-name" v-model="storeid">
     							<option v-for="i in clients" :value="i.id">{{i.client_name}}</option>
-							</select>
-							
+							</select>							
 						</div>
+						<div class="form-group pull-right">
+							<label for="se-territory">模糊搜索:{{keyword}}</label>
+							<input type="text" class="form-control" id="se-territory" v-model="keyword">
+						</div>
+						
 					</form>
 					<hr/>
     				<button type="button" :class="class_btn" @click="get_storeinfo">查询</button>
-    				<hr/>
-    				<table class="table table-hover"><!-- id="store-info"> -->
+					<hr/>
+					
+    					<table class="table table-hover"><!-- id="store-info"> -->
 							<tr v-if="item !== 'id'" v-for="(i,item) in storeinfo"><td>{{item}}</td><td @click="modify_value">{{i}}</td></tr>
-    				</table>
+						</table>
     				<hr/>
 				</div>
 
@@ -79,7 +80,7 @@
 						<input class="form-control" type="text" v-model="reg_date">
 						<label class="label label-default">{{key}}</label>
 					</form>
-					<button class="btn btn-default btn-block btn-primary" @click="reg_xxl">提交</button>
+					<button :class="class_btn" @click="reg_xxl">提交</button>
 				</div>
 			</app-block>
 		
@@ -139,7 +140,7 @@
 								<input type="text" id="remark" name="remark" class="form-control">
 								
 							</form>
-							<button type="button" class="btn btn-default btn-success btn-block" @click="add_store_update">sumbit</button>
+							<button type="button" :class="class_btn" @click="add_store_update">sumbit</button>
 						</div>
 				</div>
 			</app-block>
@@ -153,20 +154,21 @@
 						<label class="control-label" for="d-ipad">链接地址：{{link_srccm}}</label>
 						<input class="form-control" type="text" id="d-ipadress" v-model="link_src">
 					</form>
-					<button class="btn btn-default btn-block btn-primary" @click="add_link">提交</button>	
+					<button :class="class_btn" @click="add_link">提交</button>	
 				</div>
 			</app-block>
 			
 			<!-- 添加本地链接  -->
 			<app-block :title="'添加本地链接'">
 				<div slot="body">
-					<form class="form-group" action="php/main-manage-upload.php" enctype="multipart/form-data" name="f1" method="post" target="_blank">
-						<label class="control-label" for="filename">文件描述：</label>
-						<input class="form-control" type="text" id="filename" >
-						<label class="control-label" for="fileadress">上传文件：</label>
-						<input  type="file" id="fileadress[]" name="fileadress[]" class="form-control" multiple>
-						<button type="submit" class="btn btn-default btn-block btn-primary" id="file" style="margin-top: .5em">提交</button>
+					<form class="form-group">
+						<label class="control-label" for="fileadress">上传文件：(文件大小不能超过48M)</label>
+						<input  type="file" id="file" name="file" class="form-control">
+						<button type="button" :class="class_btn" id="file" style="margin-top: .5em" @click="upload">提交</button>
 					</form>
+					<ul>
+						<li v-for="i in uploadfiles"><h5>{{i.name}} <span class="badge" >SIZE:{{i.size/1024/1024}}MB</span><span class="badge pull-right">{{i.info}}</span></h5></li>
+					</ul>
 				</div>
 			</app-block>
 			
@@ -304,9 +306,10 @@
 		<app-footer></app-footer>
 	</div>
    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
-        <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="js/plugins.js"></script>
-        <script src="js/main-manage.js"></script>
+		<script src="js/main-manage.js"></script>
+		
          
     </body>
 </html>

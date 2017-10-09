@@ -12,6 +12,11 @@ var checkStatus = require('./lib/Check_status');
 var credentials = require('./lib/signed');
 
 var app = express();
+
+//multer 处理upload上传事件
+var multer = require('multer');
+var upload = multer({dest:'uploads/'});
+
 // view engine setup
 app.engine('html',ejs.__express);
 app.set('views', path.join(__dirname, 'views'));
@@ -31,6 +36,9 @@ app.use(express.static(path.join(__dirname, 'public')));//静态资源配置，�
 //add log请求的地址，ajax，url
 app.use(log.log_request);
 app.use('/',checkStatus);
+app.post('/upload',upload.any(), function(req,res,next){
+  next();
+});
 
 app.use('/', index);
 

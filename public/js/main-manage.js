@@ -61,7 +61,7 @@
 	var manage1 = new Vue({
 		el:'#manage1',
 		data:{
-			class_btn:['btn','btn-default','btn-block','btn-primary'],
+			class_btn:['btn','btn-default','btn-block'],
 			clients:[],//门店列表
 			clientsback:[],//门店列表备份
 			storeid:0,//门店id
@@ -85,6 +85,9 @@
 			link_src:'',
 			log_num:100,
 			logs:[],
+
+			//upload
+			uploadfiles:[],
 
 			//reg
 			reg_key:'',
@@ -141,6 +144,36 @@
 			}
 		},
 		methods:{
+			
+			//upload file
+			upload:function(){
+				var data = new FormData();
+				var file = $("#file")[0].files[0];
+				//console.log(file);
+				if(file.size > 50331648) return(alert('上传文件不能大于48MB'));
+				var fileobj = {name:file.name,size:file.size,info:'正在上传'};
+				this.uploadfiles.push(fileobj);
+				data.append('file',file);
+				//console.log(data);
+				$.ajax({
+					url:'/upload',
+					type:'POST',
+					dataType:'json',
+					cache:false,
+					processData:false,
+					contentType:false,
+					data:data,
+					success:function(data){
+						for(var i=0;i<manage1.uploadfiles.length;i++){
+							if(manage1.uploadfiles[i].name === fileobj.name){
+								console.log(fileobj.name);
+								manage1.uploadfiles[i].info = data.info;
+							}
+						}
+						//alert(data.info);
+					}
+				})
+			},
 			//reg xxl
 			reg_xxl:function(){
 				$.ajax({
@@ -514,24 +547,24 @@
 							//判断获取状态，							
 							if(data.status == '0'){								
 								setstatus(id,data.info,true);
+								checklen(length,ilen);
 								return;
+							}else{
+								//push data to select_main
+								manage2.select_main.push({id:id,data:data});
+								checklen(length,ilen);
 							}
+							
+							
+
 							//遍历data，获取item-main
-							for(var i=0;i<data.length;i++){
-								var vmain = manage2.sys_main,
-									main = data[i].Main_Item;
+							var vmain = manage2.sys_main;
+							if(vmain.length >0) return;
+							for(var i=0;i<data.length;i++){								
+								var	main = data[i].Main_Item;
 								if(vmain.indexOf(main) == -1){
 									vmain.push(main);
 								}
-							}
-							//push data to select_main
-							manage2.select_main.push({id:id,data:data});
-
-							if(length-1 === ilen){ //判断是否执行到最后一个ajax，true则show_batch_info
-								console.log('last get argument ajax;length:'+length+';/i:'+ilen+1);
-								manage2.show_batch_info();
-							}else{
-								console.log('last get argument ajax;length:'+length+'/i:'+ilen+1);
 							}
 						}
 					});
@@ -543,6 +576,15 @@
 						if(s[i].id == id && bool){
 							s[i].status = info;
 						}
+					}
+				}
+				//判断是否执行到最后一个ajax，true则show_batch_info
+				function checklen(length,ilen){					
+					if(length-1 == ilen){ 
+						console.log('last get argument ajax;length:'+length+';/i:'+(ilen+1));
+						manage2.show_batch_info();
+					}else{
+						console.log('last get argument ajax;length:'+length+'/i:'+(ilen+1));
 					}
 				}
 			}
@@ -603,3 +645,5 @@
 	var footer = new Vue({
 		el:'#footer'
 	});
+
+	
